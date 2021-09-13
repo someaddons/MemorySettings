@@ -34,7 +34,8 @@ public class CommonConfiguration
         disableWarnings = builder.define("disableWarnings", false);
 
         builder.comment("Set the help message for changing ram allocation");
-        helpfullinkmessage = builder.define("helpfullinkmessage", "See https://minecrafthelp.co.uk/how-to-add-more-ram-to-minecraft/ on how to change your memory settings.");
+        helpfullinkmessage = builder.define("helpfullinkmessage",
+          "See <a href='https://minecrafthelp.co.uk/how-to-add-more-ram-to-minecraft/'>https://minecrafthelp.co.uk/how-to-add-more-ram-to-minecraft/</a> on how to change your memory settings.");
 
         // Escapes the current category level
         builder.pop();
