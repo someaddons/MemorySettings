@@ -20,6 +20,7 @@ import java.awt.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.lang.management.ManagementFactory;
+import java.util.Locale;
 import java.util.Random;
 
 import static com.memorysettings.MemorysettingsMod.MODID;
@@ -111,81 +112,18 @@ public class MemorysettingsMod
         {
             if (FMLEnvironment.dist != DEDICATED_SERVER)
             {
-                javax.swing.SwingUtilities.invokeLater(() ->
+                String OS = System.getProperty("os.name", "generic").toLowerCase(Locale.ENGLISH);
+                if (true || (OS.contains("mac")) || (OS.contains("darwin")))
                 {
-                    String[] options = new String[] {"Ok", DISABLE_WARNING_BUTTON};
-                    JFrame jf = new JFrame("Memory Settings");
-                    jf.setAlwaysOnTop(true);
-                    JPanel panel = new JPanel();
-                    //panel.setBackground(Color.GRAY);
-                    jf.setContentPane(panel);
-
-                    JLabel label = new JLabel();
-                    Font font = label.getFont();
-                    StringBuffer style = new StringBuffer("font-family:" + font.getFamily() + ";");
-                    style.append("font-weight:" + (font.isBold() ? "bold" : "normal") + ";");
-                    style.append("font-size:" + font.getSize() + "pt;");
-
-                    JOptionPane optionPane = new JOptionPane();
-
-                    optionPane.setMessage(s);
-                    optionPane.setOptions(options);
-
-                    optionPane.addPropertyChangeListener(VALUE_PROPERTY, new PropertyChangeListener()
+                    openMessageUI(s);
+                }
+                else
+                {
+                    javax.swing.SwingUtilities.invokeLater(() ->
                     {
-                        @Override
-                        public void propertyChange(final PropertyChangeEvent evt)
-                        {
-                            if (evt.getNewValue().equals(DISABLE_WARNING_BUTTON))
-                            {
-                                config.getCommonConfig().disableWarnings.set(true);
-                            }
-
-                            jf.dispose();
-                        }
+                       // openMessageUI(s);
                     });
-
-                    JEditorPane ep = new JEditorPane("text/html", "");
-
-                    panel.add(optionPane, BorderLayout.CENTER);
-                    optionPane.add(ep, BorderLayout.CENTER);
-
-                    ep.setEditorKit(JEditorPane.createEditorKitForContentType("text/html"));
-                    ep.setEditable(false);
-
-                    ep.setText("<html><body style=\"" + style + "\">" //
-                                 + config.getCommonConfig().helpfullinkmessage.get()
-                                 + "</body></html>");
-
-                    ep.addHyperlinkListener(event -> {
-                        if (event.getEventType() == ACTIVATED)
-                        {
-                            try
-                            {
-                                Desktop.getDesktop().browse(event.getURL().toURI());
-                            }
-                            catch (Exception ex)
-                            {
-                                LOGGER.warn("error:", ex);
-                            }
-                        }
-                    });
-
-                    //ep.setToolTipText("if you click on <b>that link you go to     the stack");
-
-                    jf.setSize(new Dimension(Math.max(jf.getPreferredSize().width, ep.getPreferredSize().width), jf.getPreferredSize().height + ep.getPreferredSize().height));
-                    jf.setLocationRelativeTo(null);
-                    jf.setVisible(true);
-
-                    Object selectedValue = optionPane.getValue();
-
-                    jf.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-
-                    if (selectedValue instanceof String && selectedValue.equals("Stop showing"))
-                    {
-                        config.getCommonConfig().disableWarnings.set(true);
-                    }
-                });
+                }
             }
         }
         catch (Exception e)
@@ -194,6 +132,82 @@ public class MemorysettingsMod
         }
 
         LOGGER.error(s);
+    }
+
+    private static void openMessageUI(final String s)
+    {
+        String[] options = new String[] {"Ok", DISABLE_WARNING_BUTTON};
+        JFrame jf = new JFrame("Memory Settings");
+        jf.setAlwaysOnTop(true);
+        JPanel panel = new JPanel();
+        //panel.setBackground(Color.GRAY);
+        jf.setContentPane(panel);
+
+        JLabel label = new JLabel();
+        Font font = label.getFont();
+        StringBuffer style = new StringBuffer("font-family:" + font.getFamily() + ";");
+        style.append("font-weight:" + (font.isBold() ? "bold" : "normal") + ";");
+        style.append("font-size:" + font.getSize() + "pt;");
+
+        JOptionPane optionPane = new JOptionPane();
+
+        optionPane.setMessage(s);
+        optionPane.setOptions(options);
+
+        optionPane.addPropertyChangeListener(VALUE_PROPERTY, new PropertyChangeListener()
+        {
+            @Override
+            public void propertyChange(final PropertyChangeEvent evt)
+            {
+                if (evt.getNewValue().equals(DISABLE_WARNING_BUTTON))
+                {
+                    config.getCommonConfig().disableWarnings.set(true);
+                }
+
+                jf.dispose();
+            }
+        });
+
+        JEditorPane ep = new JEditorPane("text/html", "");
+
+        panel.add(optionPane, BorderLayout.CENTER);
+        optionPane.add(ep, BorderLayout.CENTER);
+
+        ep.setEditorKit(JEditorPane.createEditorKitForContentType("text/html"));
+        ep.setEditable(false);
+
+        ep.setText("<html><body style=\"" + style + "\">" //
+                     + config.getCommonConfig().helpfullinkmessage.get()
+                     + "</body></html>");
+
+        ep.addHyperlinkListener(event -> {
+            if (event.getEventType() == ACTIVATED)
+            {
+                try
+                {
+                    Desktop.getDesktop().browse(event.getURL().toURI());
+                }
+                catch (Exception ex)
+                {
+                    LOGGER.warn("error:", ex);
+                }
+            }
+        });
+
+        //ep.setToolTipText("if you click on <b>that link you go to     the stack");
+
+        jf.setSize(new Dimension(Math.max(jf.getPreferredSize().width, ep.getPreferredSize().width), jf.getPreferredSize().height + ep.getPreferredSize().height));
+        jf.setLocationRelativeTo(null);
+        jf.setVisible(true);
+
+        Object selectedValue = optionPane.getValue();
+
+        jf.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+
+        if (selectedValue instanceof String && selectedValue.equals("Stop showing"))
+        {
+            config.getCommonConfig().disableWarnings.set(true);
+        }
     }
 
     @SubscribeEvent
