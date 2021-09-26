@@ -113,7 +113,7 @@ public class MemorysettingsMod
             if (FMLEnvironment.dist != DEDICATED_SERVER)
             {
                 String OS = System.getProperty("os.name", "generic").toLowerCase(Locale.ENGLISH);
-                if (true || (OS.contains("mac")) || (OS.contains("darwin")))
+                if ((OS.contains("mac")) || (OS.contains("darwin")))
                 {
                     openMessageUI(s);
                 }
@@ -121,7 +121,7 @@ public class MemorysettingsMod
                 {
                     javax.swing.SwingUtilities.invokeLater(() ->
                     {
-                       // openMessageUI(s);
+                        openMessageUI(s);
                     });
                 }
             }
@@ -203,6 +203,7 @@ public class MemorysettingsMod
         Object selectedValue = optionPane.getValue();
 
         jf.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        jf.pack();
 
         if (selectedValue instanceof String && selectedValue.equals("Stop showing"))
         {
