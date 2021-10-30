@@ -138,6 +138,7 @@ public class MemorysettingsMod
     {
         String[] options = new String[] {"Ok", DISABLE_WARNING_BUTTON};
         JFrame jf = new JFrame("Memory Settings");
+        jf.setResizable(false);
         jf.setAlwaysOnTop(true);
         JPanel panel = new JPanel();
         //panel.setBackground(Color.GRAY);
