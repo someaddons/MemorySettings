@@ -1,0 +1,15 @@
+{
+  "required": false,
+  "package": "com.memorysettings.mixin",
+  "compatibilityLevel": "JAVA_16",
+  "plugin": "com.memorysettings.MixinConfig",
+  "refmap": "memorysettings.refmap.json",
+  "mixins": [
+  ],
+  "client": [
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "minVersion": "0.8"
+}

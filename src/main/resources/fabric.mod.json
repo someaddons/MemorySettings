@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "id": "memorysettings",
+  "version": "${version}",
+
+  "name": "Memorysettings Mod",
+  "description": "Checks the memory used on launch",
+  "authors": [
+    "Someaddons"
+  ],
+  "contact": {
+    "homepage": "",
+    "sources": ""
+  },
+
+  "license": "ARR",
+  "icon": "assets/modid/icon.png",
+
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "com.memorysettings.MemorysettingsMod"
+    ]
+  },
+  "mixins": [
+    "memorysettings.mixins.json"
+  ],
+
+  "depends": {
+    "fabricloader": ">=0.11.3",
+    "fabric": "*",
+    "minecraft": "1.18.x",
+    "java": ">=17"
+  },
+  "suggests": {
+    "another-mod": "*"
+  }
+}
