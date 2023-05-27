@@ -115,7 +115,7 @@ public class MemorysettingsMod
                 String OS = System.getProperty("os.name", "generic").toLowerCase(Locale.ENGLISH);
                 if ((OS.contains("mac")) || (OS.contains("darwin")))
                 {
-                    openMessageUI(s);
+                    //openMessageUI(s);
                 }
                 else
                 {
