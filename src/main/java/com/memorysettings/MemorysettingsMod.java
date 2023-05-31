@@ -22,10 +22,10 @@ import javax.swing.*;
 import java.awt.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.lang.management.ManagementFactory;
 import java.util.Locale;
 import java.util.Random;
 
+import static com.memorysettings.Memory.*;
 import static com.memorysettings.MemorysettingsMod.MODID;
 import static javax.swing.JOptionPane.VALUE_PROPERTY;
 import static javax.swing.event.HyperlinkEvent.EventType.ACTIVATED;
@@ -49,19 +49,15 @@ public class MemorysettingsMod
         Mod.EventBusSubscriber.Bus.FORGE.bus().get().register(EventHandler.class);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::clientSetup);
+
+        if (!config.getCommonConfig().disableWarnings.get())
+        {
+            doWarning();
+        }
     }
 
-    public static void checkMemory()
+    public static void doWarning()
     {
-        if (config.getCommonConfig().disableWarnings.get())
-        {
-            return;
-        }
-
-        final int systemMemory = (int) (((com.sun.management.OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean()).getTotalPhysicalMemorySize() / 1048576);
-        final int freeMemory = (int) (((com.sun.management.OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean()).getFreePhysicalMemorySize() / 1048576);
-        final int heapSetting = (int) (ManagementFactory.getMemoryMXBean().getHeapMemoryUsage().getMax() / 1048576);
-
         if (System.getProperties().getProperty("sun.arch.data.model").equals("32") && systemMemory > 4096)
         {
             memorycheckresult.append(Component.translatable("warning.32bit"));
