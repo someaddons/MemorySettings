@@ -25,7 +25,7 @@ public class FontManagerMixin
       final ProfilerFiller p_95038_,
       final CallbackInfo ci)
     {
-        if (Minecraft.getInstance().screen == null && !MemorysettingsMod.memorycheckresult.toString().isEmpty()
+        if (Minecraft.getInstance().screen == null && !MemorysettingsMod.memorycheckresult.getSiblings().isEmpty()
               && !MemorysettingsMod.config.getCommonConfig().disableWarnings.get())
         {
             Minecraft.getInstance().setScreen(new MemoryErrorScreen(MemorysettingsMod.memorycheckresult));
