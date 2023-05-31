@@ -6,6 +6,8 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.util.FormattedCharSequence;
 
 import java.net.URI;
@@ -20,7 +22,7 @@ public class MemoryErrorScreen extends Screen
 
     public MemoryErrorScreen(final Component message)
     {
-        super(Component.empty());
+        super(new TextComponent(""));
         this.message = message;
     }
 
@@ -32,7 +34,7 @@ public class MemoryErrorScreen extends Screen
             this.minecraft.setScreen((Screen) null);
         });
 
-        button_howto = new Button(this.width / 2 - 100, 120, 200, 20, Component.translatable("button.howto"), (button) -> {
+        button_howto = new Button(this.width / 2 - 100, 120, 200, 20, new TranslatableComponent("button.howto"), (button) -> {
             this.minecraft.keyboardHandler.setClipboard(MemorysettingsMod.config.getCommonConfig().howtolink.get());
             try
             {
@@ -44,7 +46,7 @@ public class MemoryErrorScreen extends Screen
             }
         });
 
-        button_noremind = new Button(this.width / 2 - 100, 160, 200, 20, Component.translatable("button.stopremind"), (button) -> {
+        button_noremind = new Button(this.width / 2 - 100, 160, 200, 20, new TranslatableComponent("button.stopremind"), (button) -> {
             this.minecraft.setScreen((Screen) null);
             MemorysettingsMod.config.getCommonConfig().disableWarnings.set(true);
         });

@@ -5,8 +5,9 @@ import com.memorysettings.event.ClientEventHandler;
 import com.memorysettings.event.EventHandler;
 import com.memorysettings.event.ModEventHandler;
 import net.minecraft.ChatFormatting;
-import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.IExtensionPoint;
 import net.minecraftforge.fml.ModLoadingContext;
@@ -40,7 +41,7 @@ public class MemorysettingsMod
     private static final String           DISABLE_WARNING_BUTTON = "Stop showing";
     public static        Configuration    config                 = new Configuration();
     public static        Random           rand                   = new Random();
-    public static        MutableComponent memorycheckresult      = Component.empty();
+    public static        MutableComponent memorycheckresult      = new TextComponent("");
 
     public MemorysettingsMod()
     {
@@ -64,7 +65,7 @@ public class MemorysettingsMod
 
         if (System.getProperties().getProperty("sun.arch.data.model").equals("32") && systemMemory > 4096)
         {
-            memorycheckresult.append(Component.translatable("warning.32bit"));
+            memorycheckresult.append(new TranslatableComponent("warning.32bit"));
             LOGGER.warn("You're using 32bit java on a 64bit system, please install 64bit java.");
             return;
         }
@@ -78,35 +79,35 @@ public class MemorysettingsMod
         {
             message += "You have more memory allocated(" + heapSetting + "mb) than recommended for this pack, the maximum is: " + configMax
                          + "mb.\nThe recommended amount for your system is: " + recommendMemory + " mb.\n";
-            memorycheckresult.append(Component.translatable("warning.toomuch",
-              Component.literal(heapSetting + "").withStyle(ChatFormatting.YELLOW),
-              Component.literal(configMax + "").withStyle(ChatFormatting.BLUE),
-              Component.literal(recommendMemory + "").withStyle(ChatFormatting.GREEN)));
+            memorycheckresult.append(new TranslatableComponent("warning.toomuch",
+              new TextComponent(heapSetting + "").withStyle(ChatFormatting.YELLOW),
+              new TextComponent(configMax + "").withStyle(ChatFormatting.BLUE),
+              new TextComponent(recommendMemory + "").withStyle(ChatFormatting.GREEN)));
         }
 
         if (heapSetting < configMin)
         {
             message += "You have less memory allocated(" + heapSetting + "mb) than recommended for this pack, the minimum is: " + configMin
                          + "mb.\nThe recommended amount for your system is: " + recommendMemory + " mb.\n";
-            memorycheckresult.append(Component.translatable("warning.toolow",
-              Component.literal(heapSetting + "").withStyle(ChatFormatting.YELLOW),
-              Component.literal(configMin + "").withStyle(ChatFormatting.BLUE),
-              Component.literal(recommendMemory + "").withStyle(ChatFormatting.GREEN)));
+            memorycheckresult.append(new TranslatableComponent("warning.toolow",
+              new TextComponent(heapSetting + "").withStyle(ChatFormatting.YELLOW),
+              new TextComponent(configMin + "").withStyle(ChatFormatting.BLUE),
+              new TextComponent(recommendMemory + "").withStyle(ChatFormatting.GREEN)));
         }
 
         if (heapSetting > (recommendMemory + 550))
         {
             message += "You have more memory allocated than recommended for your system, the recommended amount for your system is: " + recommendMemory + " mb.\n";
-            memorycheckresult.append(Component.translatable("warning.overrecommended", Component.literal(recommendMemory + "").withStyle(ChatFormatting.GREEN)));
+            memorycheckresult.append(new TranslatableComponent("warning.overrecommended", new TextComponent(recommendMemory + "").withStyle(ChatFormatting.GREEN)));
         }
 
         if (recommendMemory < configMin)
         {
             message += "The recommended for your system is lower than the required minimum of " + configMin
                          + "mb for this pack, things may not work out so well.\nMost common sign of insufficient ram is frequent stutters.\n";
-            memorycheckresult.append(Component.translatable("warning.recommendedbelowmin",
-              Component.literal(recommendMemory + "").withStyle(ChatFormatting.GREEN),
-              Component.literal(configMin + "").withStyle(ChatFormatting.RED)));
+            memorycheckresult.append(new TranslatableComponent("warning.recommendedbelowmin",
+              new TextComponent(recommendMemory + "").withStyle(ChatFormatting.GREEN),
+              new TextComponent(configMin + "").withStyle(ChatFormatting.RED)));
         }
 
         if (message.equals(""))
