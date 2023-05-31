@@ -84,27 +84,29 @@ public class MemorysettingsMod
               Component.literal(recommendMemory + "").withStyle(ChatFormatting.GREEN)));
         }
 
-        if (true || heapSetting < configMin)
+        if (heapSetting < configMin)
         {
             message += "You have less memory allocated(" + heapSetting + "mb) than recommended for this pack, the minimum is: " + configMin
                          + "mb.\nThe recommended amount for your system is: " + recommendMemory + " mb.\n";
-            memorycheckresult.append(Component.translatable("warning.toomuch",
+            memorycheckresult.append(Component.translatable("warning.toolow",
               Component.literal(heapSetting + "").withStyle(ChatFormatting.YELLOW),
               Component.literal(configMin + "").withStyle(ChatFormatting.BLUE),
               Component.literal(recommendMemory + "").withStyle(ChatFormatting.GREEN)));
         }
 
-        if (heapSetting > (recommendMemory + 523))
+        if (heapSetting > (recommendMemory + 550))
         {
             message += "You have more memory allocated than recommended for your system, the recommended amount for your system is: " + recommendMemory + " mb.\n";
-            memorycheckresult.append(Component.translatable("warning.toomuch", Component.literal(recommendMemory + "").withStyle(ChatFormatting.GREEN)));
+            memorycheckresult.append(Component.translatable("warning.overrecommended", Component.literal(recommendMemory + "").withStyle(ChatFormatting.GREEN)));
         }
 
         if (recommendMemory < configMin)
         {
-            message += "The recommended for your system is lower than the required minimum of " + config.getCommonConfig().minimumClient.get()
+            message += "The recommended for your system is lower than the required minimum of " + configMin
                          + "mb for this pack, things may not work out so well.\nMost common sign of insufficient ram is frequent stutters.\n";
-            memorycheckresult.append(Component.translatable("warning.toomuch", Component.literal(recommendMemory + "").withStyle(ChatFormatting.GREEN)));
+            memorycheckresult.append(Component.translatable("warning.recommendedbelowmin",
+              Component.literal(recommendMemory + "").withStyle(ChatFormatting.GREEN),
+              Component.literal(configMin + "").withStyle(ChatFormatting.RED)));
         }
 
         if (message.equals(""))

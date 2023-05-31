@@ -60,7 +60,7 @@ public class MemoryErrorScreen extends Screen
         fillGradient(poseStack, 0, 0, this.width, this.height, -12574688, -11530224);
 
         int yOffset = 20;
-        for (final FormattedCharSequence component : font.split(message, 200))
+        for (final FormattedCharSequence component : font.split(message, 220))
         {
             drawCenteredString(poseStack, this.font, component, this.width / 2, yOffset, 16777215);
             yOffset += 10;
