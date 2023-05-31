@@ -28,11 +28,11 @@ public class MemoryErrorScreen extends Screen
     {
         super.init();
 
-        button_proceed = Button.builder(CommonComponents.GUI_PROCEED, (button) -> {
+        button_proceed = new Button(this.width / 2 - 100, 140, 200, 20, CommonComponents.GUI_PROCEED, (button) -> {
             this.minecraft.setScreen((Screen) null);
-        }).bounds(this.width / 2 - 100, 140, 200, 20).build();
+        });
 
-        button_howto = Button.builder(Component.translatable("button.howto"), (button) -> {
+        button_howto = new Button(this.width / 2 - 100, 120, 200, 20, Component.translatable("button.howto"), (button) -> {
             this.minecraft.keyboardHandler.setClipboard(MemorysettingsMod.config.getCommonConfig().howtolink.get());
             try
             {
@@ -42,12 +42,12 @@ public class MemoryErrorScreen extends Screen
             {
                 e.printStackTrace();
             }
-        }).bounds(this.width / 2 - 100, 120, 200, 20).build();
+        });
 
-        button_noremind = Button.builder(Component.translatable("button.stopremind"), (button) -> {
+        button_noremind = new Button(this.width / 2 - 100, 160, 200, 20, Component.translatable("button.stopremind"), (button) -> {
             this.minecraft.setScreen((Screen) null);
             MemorysettingsMod.config.getCommonConfig().disableWarnings.set(true);
-        }).bounds(this.width / 2 - 100, 160, 200, 20).build();
+        });
 
 
         this.addRenderableWidget(button_howto);
@@ -66,9 +66,9 @@ public class MemoryErrorScreen extends Screen
             yOffset += 10;
         }
 
-        button_proceed.setY(20 + yOffset);
-        button_howto.setY(40 + yOffset);
-        button_noremind.setY(60 + yOffset);
+        button_proceed.y = 20 + yOffset;
+        button_howto.y = 40 + yOffset;
+        button_noremind.y = 60 + yOffset;
 
         super.render(poseStack, x, y, z);
     }
