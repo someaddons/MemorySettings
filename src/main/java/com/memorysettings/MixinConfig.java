@@ -14,7 +14,7 @@ public class MixinConfig implements IMixinConfigPlugin
     {
         try
         {
-            MemorysettingsMod.checkMemory();
+            Memory.recordMemory();
         }
         catch (Exception e)
         {
