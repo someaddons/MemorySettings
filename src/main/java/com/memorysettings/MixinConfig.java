@@ -31,7 +31,7 @@ public class MixinConfig implements IMixinConfigPlugin
     @Override
     public boolean shouldApplyMixin(final String targetClassName, final String mixinClassName)
     {
-        return false;
+        return true;
     }
 
     @Override

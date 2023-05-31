@@ -1,0 +1,8 @@
+{
+  "warning.32bit": "You're using 32bit java on a 64bit system, please install 64bit java.",
+  "warning.toomuch": "More memory allocated(%s mb) than recommended for this pack, maximum is: %s mb.\nThe Recommended amount is: %s mb.",
+  "warning.toolow": "Less memory allocated(%s mb) than recommended for this pack, minimum is: %s mb.\n Recommended amount is:  %s mb.",
+  "warning.overrecommended": "More memory allocated than recommended for your system, recommended is: %s mb.",
+  "button.howto": "Open guide",
+  "button.stopremind": "Stop showing"
+}

@@ -10,7 +10,7 @@ public class CommonConfiguration
     public final ForgeConfigSpec.ConfigValue<Integer> maximumClient;
     public final ForgeConfigSpec.ConfigValue<Integer> maximumServer;
     public final ForgeConfigSpec.ConfigValue<Boolean> disableWarnings;
-    public final ForgeConfigSpec.ConfigValue<String>  helpfullinkmessage;
+    public final ForgeConfigSpec.ConfigValue<String>  howtolink;
 
     protected CommonConfiguration(final ForgeConfigSpec.Builder builder)
     {
@@ -33,9 +33,9 @@ public class CommonConfiguration
         builder.comment("Disable the memory warnings, default = false");
         disableWarnings = builder.define("disableWarnings", false);
 
-        builder.comment("Set the help message for changing ram allocation, you can use html here e.g. for setting a link to a wiki page");
-        helpfullinkmessage = builder.define("helpfullinkmessage",
-          "See <a href='https://minecrafthelp.co.uk/how-to-add-more-ram-to-minecraft/'>https://minecrafthelp.co.uk/how-to-add-more-ram-to-minecraft/</a> on how to change your memory settings.");
+        builder.comment("Set the link used to guide players to a website with instructions to change memory allocation");
+        howtolink = builder.define("howtolink",
+          "https://apexminecrafthosting.com/how-to-allocate-more-ram/");
 
         // Escapes the current category level
         builder.pop();
