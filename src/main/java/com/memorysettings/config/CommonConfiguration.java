@@ -1,19 +1,16 @@
 package com.memorysettings.config;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.memorysettings.MemorysettingsMod;
 
-import java.nio.charset.StandardCharsets;
-
 public class CommonConfiguration
 {
-    public int     minimumClient      = 2500;
-    public int     minimumServer      = 2500;
-    public int     maximumClient      = 8500;
-    public int     maximumServer      = 8500;
-    public boolean disableWarnings    = false;
-    public String  helpfullinkmessage = "See <a href='https://minecrafthelp.co.uk/how-to-add-more-ram-to-minecraft/'>https://minecrafthelp.co.uk/how-to-add-more-ram-to-minecraft/</a> on how to change your memory settings.";
+    public int     minimumClient   = 2500;
+    public int     minimumServer   = 2500;
+    public int     maximumClient   = 8500;
+    public int     maximumServer   = 8500;
+    public boolean disableWarnings = false;
+    public String  howtolink       = "https://apexminecrafthosting.com/how-to-allocate-more-ram/";
 
     protected CommonConfiguration()
     {
@@ -38,7 +35,7 @@ public class CommonConfiguration
 
         final JsonObject entry3 = new JsonObject();
         entry3.addProperty("desc:", "Set the servers minimum memory warning threshold in MB. Choose the lowest value possible which keeps the pack playable." +
-          " default:2500, min 2500, max 25000");
+                                      " default:2500, min 2500, max 25000");
         entry3.addProperty("minimumServer", minimumServer);
         root.add("minimumServer", entry3);
 
@@ -54,9 +51,9 @@ public class CommonConfiguration
         root.add("disableWarnings", entry5);
 
         final JsonObject entry6 = new JsonObject();
-        entry6.addProperty("desc:", "Set the help message for changing ram allocation, you can use html here e.g. for setting a link to a wiki page");
-        entry6.addProperty("helpfullinkmessage", helpfullinkmessage);
-        root.add("helpfullinkmessage", entry6);
+        entry6.addProperty("desc:", "Set the link used to guide players to a website with instructions to change memory allocation");
+        entry6.addProperty("howtolink", howtolink);
+        root.add("howtolink", entry6);
 
         return root;
     }
@@ -76,7 +73,7 @@ public class CommonConfiguration
             minimumServer = data.get("minimumServer").getAsJsonObject().get("minimumServer").getAsInt();
             maximumServer = data.get("maximumServer").getAsJsonObject().get("maximumServer").getAsInt();
             disableWarnings = data.get("disableWarnings").getAsJsonObject().get("disableWarnings").getAsBoolean();
-            helpfullinkmessage = data.get("helpfullinkmessage").getAsJsonObject().get("helpfullinkmessage").getAsString();
+            howtolink = data.get("howtolink").getAsJsonObject().get("howtolink").getAsString();
         }
         catch (Exception e)
         {

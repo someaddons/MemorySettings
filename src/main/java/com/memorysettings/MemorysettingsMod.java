@@ -3,6 +3,9 @@ package com.memorysettings;
 import com.memorysettings.config.Configuration;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -21,11 +24,12 @@ import static net.fabricmc.api.EnvType.SERVER;
 // The value here should match an entry in the META-INF/mods.toml file
 public class MemorysettingsMod implements ModInitializer
 {
-    public static final  String        MODID                  = "memorysettings";
-    public static final  Logger        LOGGER                 = LogManager.getLogger();
-    private static final String        DISABLE_WARNING_BUTTON = "Stop showing";
-    public static        Configuration config                 = new Configuration();
-    public static        Random        rand                   = new Random();
+    public static final  String           MODID                  = "memorysettings";
+    public static final  Logger           LOGGER                 = LogManager.getLogger();
+    private static final String           DISABLE_WARNING_BUTTON = "Stop showing";
+    public static        Configuration    config                 = new Configuration();
+    public static        Random           rand                   = new Random();
+    public static        MutableComponent memorycheckresult      = Component.empty();
 
     public MemorysettingsMod()
     {
@@ -56,7 +60,8 @@ public class MemorysettingsMod implements ModInitializer
 
         if (System.getProperties().getProperty("sun.arch.data.model").equals("32") && systemMemory > 4096)
         {
-            message("You're using 32bit java on a 64bit system, please install 64bit java.");
+            memorycheckresult.append(Component.translatable("warning.32bit"));
+            LOGGER.warn("You're using 32bit java on a 64bit system, please install 64bit java.");
             return;
         }
 
@@ -70,24 +75,35 @@ public class MemorysettingsMod implements ModInitializer
         {
             message += "You have more memory allocated(" + heapSetting + "mb) than recommended for this pack, the maximum is: " + configMax
                          + "mb.\nThe recommended amount for your system is: " + recommendMemory + " mb.\n";
+            memorycheckresult.append(Component.translatable("warning.toomuch",
+              Component.literal(heapSetting + "").withStyle(ChatFormatting.YELLOW),
+              Component.literal(configMax + "").withStyle(ChatFormatting.BLUE),
+              Component.literal(recommendMemory + "").withStyle(ChatFormatting.GREEN)));
         }
 
         if (heapSetting < configMin)
         {
-
-            message += "You have less memory allocated(" + heapSetting + "mb) than recommended for this pack, the minimum is: " + config.getCommonConfig().minimumClient
+            message += "You have less memory allocated(" + heapSetting + "mb) than recommended for this pack, the minimum is: " + configMin
                          + "mb.\nThe recommended amount for your system is: " + recommendMemory + " mb.\n";
+            memorycheckresult.append(Component.translatable("warning.toolow",
+              Component.literal(heapSetting + "").withStyle(ChatFormatting.YELLOW),
+              Component.literal(configMin + "").withStyle(ChatFormatting.BLUE),
+              Component.literal(recommendMemory + "").withStyle(ChatFormatting.GREEN)));
         }
 
-        if (heapSetting > (recommendMemory + 523))
+        if (heapSetting > (recommendMemory + 550))
         {
             message += "You have more memory allocated than recommended for your system, the recommended amount for your system is: " + recommendMemory + " mb.\n";
+            memorycheckresult.append(Component.translatable("warning.overrecommended", Component.literal(recommendMemory + "").withStyle(ChatFormatting.GREEN)));
         }
 
         if (recommendMemory < configMin)
         {
-            message += "The recommended for your system is lower than the required minimum of " + config.getCommonConfig().minimumClient
+            message += "The recommended for your system is lower than the required minimum of " + configMin
                          + "mb for this pack, things may not work out so well.\nMost common sign of insufficient ram is frequent stutters.\n";
+            memorycheckresult.append(Component.translatable("warning.recommendedbelowmin",
+              Component.literal(recommendMemory + "").withStyle(ChatFormatting.GREEN),
+              Component.literal(configMin + "").withStyle(ChatFormatting.RED)));
         }
 
         if (message.equals(""))
@@ -95,7 +111,12 @@ public class MemorysettingsMod implements ModInitializer
             return;
         }
 
-        message(message);
+        LOGGER.warn(message);
+
+        if (heapSetting < 1025)
+        {
+            message(message);
+        }
     }
 
     /**
@@ -176,7 +197,7 @@ public class MemorysettingsMod implements ModInitializer
         ep.setEditable(false);
 
         ep.setText("<html><body style=\"" + style + "\">" //
-                     + config.getCommonConfig().helpfullinkmessage
+                     + config.getCommonConfig().howtolink
                      + "</body></html>");
 
         ep.addHyperlinkListener(event -> {
