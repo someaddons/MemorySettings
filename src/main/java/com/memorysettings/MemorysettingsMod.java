@@ -14,10 +14,10 @@ import javax.swing.*;
 import java.awt.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.lang.management.ManagementFactory;
 import java.util.Locale;
 import java.util.Random;
 
+import static com.memorysettings.Memory.*;
 import static javax.swing.JOptionPane.VALUE_PROPERTY;
 import static javax.swing.event.HyperlinkEvent.EventType.ACTIVATED;
 import static net.fabricmc.api.EnvType.SERVER;
@@ -34,7 +34,13 @@ public class MemorysettingsMod implements ModInitializer
 
     public MemorysettingsMod()
     {
+        config = new Configuration();
+        config.load();
 
+        if (!config.getCommonConfig().disableWarnings)
+        {
+            doWarning();
+        }
     }
 
     @Override
@@ -45,20 +51,8 @@ public class MemorysettingsMod implements ModInitializer
         // Proceed with mild caution.
     }
 
-    public static void checkMemory()
+    public static void doWarning()
     {
-        config = new Configuration();
-        config.load();
-
-        if (config.getCommonConfig().disableWarnings)
-        {
-            return;
-        }
-
-        final int systemMemory = (int) (((com.sun.management.OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean()).getTotalPhysicalMemorySize() / 1048576);
-        final int freeMemory = (int) (((com.sun.management.OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean()).getFreePhysicalMemorySize() / 1048576);
-        final int heapSetting = (int) (ManagementFactory.getMemoryMXBean().getHeapMemoryUsage().getMax() / 1048576);
-
         if (System.getProperties().getProperty("sun.arch.data.model").equals("32") && systemMemory > 4096)
         {
             memorycheckresult.append(new TranslatableComponent("warning.32bit"));
