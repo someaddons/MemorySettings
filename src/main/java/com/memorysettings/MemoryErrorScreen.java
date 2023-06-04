@@ -9,6 +9,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.util.FormattedCharSequence;
+import net.minecraftforge.common.MinecraftForge;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -31,6 +32,7 @@ public class MemoryErrorScreen extends Screen
         super.init();
 
         button_proceed = new Button(this.width / 2 - 100, 140, 200, 20, CommonComponents.GUI_PROCEED, (button) -> {
+            MinecraftForge.EVENT_BUS.start();
             this.minecraft.setScreen((Screen) null);
         });
 
@@ -47,6 +49,7 @@ public class MemoryErrorScreen extends Screen
         });
 
         button_noremind = new Button(this.width / 2 - 100, 160, 200, 20, new TranslatableComponent("button.stopremind"), (button) -> {
+            MinecraftForge.EVENT_BUS.start();
             this.minecraft.setScreen((Screen) null);
             MemorysettingsMod.config.getCommonConfig().disableWarnings.set(true);
         });
