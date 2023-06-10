@@ -23,6 +23,7 @@ public class MemoryErrorScreen extends Screen
     {
         super(Component.empty());
         this.message = message;
+        MemorysettingsMod.didDisplay = true;
     }
 
     protected void init()

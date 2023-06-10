@@ -41,6 +41,7 @@ public class MemorysettingsMod
     public static        Configuration    config                 = new Configuration();
     public static        Random           rand                   = new Random();
     public static        MutableComponent memorycheckresult      = Component.empty();
+    public static        boolean          didDisplay             = false;
 
     public MemorysettingsMod()
     {
