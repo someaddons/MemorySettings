@@ -15,7 +15,8 @@ public class ClienModLoaderMixin
     @Inject(method = "completeModLoading", at = @At("RETURN"), cancellable = true, remap = false)
     private static void onReturn(final CallbackInfoReturnable<Boolean> cir)
     {
-        if (!cir.getReturnValue())
+        if (!cir.getReturnValue() && !MemorysettingsMod.memorycheckresult.getSiblings().isEmpty()
+              && !MemorysettingsMod.config.getCommonConfig().disableWarnings.get() && !MemorysettingsMod.didDisplay)
         {
             Minecraft.getInstance().setScreen(new MemoryErrorScreen(MemorysettingsMod.memorycheckresult));
             cir.setReturnValue(true);
