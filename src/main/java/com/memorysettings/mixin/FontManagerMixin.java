@@ -4,6 +4,7 @@ import com.memorysettings.MemoryErrorScreen;
 import com.memorysettings.MemorysettingsMod;
 import com.mojang.blaze3d.font.GlyphProvider;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.font.FontManager;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.profiling.ProfilerFiller;
@@ -15,15 +16,12 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import java.util.List;
 import java.util.Map;
 
-@Mixin(targets = "net/minecraft/client/gui/font/FontManager$1")
+@Mixin(targets = "net/minecraft/client/gui/font/FontManager")
 public class FontManagerMixin
 {
-    @Inject(method = "apply(Ljava/util/Map;Lnet/minecraft/server/packs/resources/ResourceManager;Lnet/minecraft/util/profiling/ProfilerFiller;)V", at = @At("RETURN"))
+    @Inject(method = "apply", at = @At("RETURN"))
     private void onInit(
-      final Map<ResourceLocation, List<GlyphProvider>> p_95036_,
-      final ResourceManager p_95037_,
-      final ProfilerFiller p_95038_,
-      final CallbackInfo ci)
+      final FontManager.Preparation preparation, final ProfilerFiller profilerFiller, final CallbackInfo ci)
     {
         if (!(Minecraft.getInstance().screen instanceof MemoryErrorScreen) && !MemorysettingsMod.memorycheckresult.getSiblings().isEmpty()
               && !MemorysettingsMod.config.getCommonConfig().disableWarnings)

@@ -1,7 +1,7 @@
 package com.memorysettings;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.Util;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.CommonComponents;
@@ -56,22 +56,25 @@ public class MemoryErrorScreen extends Screen
         this.addRenderableWidget(button_noremind);
     }
 
-    public void render(PoseStack poseStack, int x, int y, float z)
+    @Override
+    public void render(GuiGraphics graphics, int x, int y, float z)
     {
-        fillGradient(poseStack, 0, 0, this.width, this.height, -12574688, -11530224);
-
-        int yOffset = 20;
-        for (final FormattedCharSequence component : font.split(message, 220))
         {
-            drawCenteredString(poseStack, this.font, component, this.width / 2, yOffset, 16777215);
-            yOffset += 10;
+            graphics.fillGradient(0, 0, this.width, this.height, -12574688, -11530224);
+
+            int yOffset = 20;
+            for (final FormattedCharSequence component : font.split(message, 220))
+            {
+                graphics.drawCenteredString(this.font, component, this.width / 2, yOffset, 16777215);
+                yOffset += 10;
+            }
+
+            button_proceed.setY(20 + yOffset);
+            button_howto.setY(40 + yOffset);
+            button_noremind.setY(60 + yOffset);
+
+            super.render(graphics, x, y, z);
         }
-
-        button_proceed.setY(20 + yOffset);
-        button_howto.setY(40 + yOffset);
-        button_noremind.setY(60 + yOffset);
-
-        super.render(poseStack, x, y, z);
     }
 
     public boolean shouldCloseOnEsc()
