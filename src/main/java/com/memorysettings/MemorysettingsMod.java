@@ -85,10 +85,10 @@ public class MemorysettingsMod implements ModInitializer
               Component.literal(recommendMemory + "").withStyle(ChatFormatting.GREEN)));
         }
 
-        if (heapSetting > (recommendMemory + 550))
+        if (heapSetting > (recommendMemory + 550) && !(heapSetting > configMax || heapSetting < configMin))
         {
             message += "You have more memory allocated than recommended for your system, the recommended amount for your system is: " + recommendMemory + " mb.\n";
-            memorycheckresult.append(Component.translatable("warning.overrecommended", Component.literal(recommendMemory + "").withStyle(ChatFormatting.GREEN)));
+            memorycheckresult.append(Component.translatable("warning.overrecommended",Component.literal(heapSetting + "").withStyle(ChatFormatting.YELLOW), Component.literal(recommendMemory + "").withStyle(ChatFormatting.GREEN)));
         }
 
         if (recommendMemory < configMin)
