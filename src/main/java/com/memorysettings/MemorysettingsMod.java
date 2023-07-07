@@ -66,7 +66,7 @@ public class MemorysettingsMod implements ModInitializer
 
         final int configMax = (FabricLoader.getInstance().getEnvironmentType() != SERVER) ? config.getCommonConfig().maximumClient : config.getCommonConfig().maximumServer;
         final int configMin = (FabricLoader.getInstance().getEnvironmentType() != SERVER) ? config.getCommonConfig().minimumClient : config.getCommonConfig().minimumServer;
-        final int recommendMemory = Mth.clamp(getRecommendedMemoryForSystemMemory(systemMemory), configMax, configMin);
+        final int recommendMemory = Math.min(getRecommendedMemoryForSystemMemory(systemMemory), configMax);
 
         String message = "";
         if (heapSetting > configMax)
