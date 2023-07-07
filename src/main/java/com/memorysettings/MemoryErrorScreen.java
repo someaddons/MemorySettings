@@ -38,10 +38,10 @@ public class MemoryErrorScreen extends Screen
         });
 
         button_howto = new Button(this.width / 2 - 100, 120, 200, 20, new TranslatableComponent("button.howto"), (button) -> {
-            this.minecraft.keyboardHandler.setClipboard(MemorysettingsMod.config.getCommonConfig().howtolink.get());
+            this.minecraft.keyboardHandler.setClipboard(MemorysettingsMod.config.getCommonConfig().howtolink);
             try
             {
-                Util.getPlatform().openUri(new URI(MemorysettingsMod.config.getCommonConfig().howtolink.get()));
+                Util.getPlatform().openUri(new URI(MemorysettingsMod.config.getCommonConfig().howtolink));
             }
             catch (URISyntaxException e)
             {
@@ -52,7 +52,8 @@ public class MemoryErrorScreen extends Screen
         button_noremind = new Button(this.width / 2 - 100, 160, 200, 20, new TranslatableComponent("button.stopremind"), (button) -> {
             MinecraftForge.EVENT_BUS.start();
             this.minecraft.setScreen((Screen) null);
-            MemorysettingsMod.config.getCommonConfig().disableWarnings.set(true);
+            MemorysettingsMod.config.getCommonConfig().disableWarnings = true;
+            MemorysettingsMod.config.save();
         });
 
 
