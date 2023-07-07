@@ -42,6 +42,7 @@ public class MemorysettingsMod
     {
         ModLoadingContext.get().registerExtensionPoint(IExtensionPoint.DisplayTest.class, () -> new IExtensionPoint.DisplayTest(() -> "", (c, b) -> true));
 
+        config.load();
         if (!config.getCommonConfig().disableWarnings)
         {
             doWarning();
