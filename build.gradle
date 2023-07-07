@@ -93,8 +93,6 @@ mixin {
 
 dependencies {
     minecraft "net.minecraftforge:forge:${mc_version}-${forge_version}" //21
-    implementation fg.deobf("curse.maven:blueskies-312918:4525734")
-    implementation fg.deobf("curse.maven:structuregel-378802:4489758")
 
     annotationProcessor "org.spongepowered:mixin:0.8.5:processor"
 }
