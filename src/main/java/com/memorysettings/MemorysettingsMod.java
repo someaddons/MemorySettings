@@ -1,19 +1,12 @@
 package com.memorysettings;
 
 import com.memorysettings.config.Configuration;
-import com.memorysettings.event.ClientEventHandler;
-import com.memorysettings.event.EventHandler;
-import com.memorysettings.event.ModEventHandler;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.IExtensionPoint;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLEnvironment;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -23,9 +16,11 @@ import java.awt.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Random;
 
-import static com.memorysettings.Memory.*;
+import static com.memorysettings.Memory.heapSetting;
+import static com.memorysettings.Memory.systemMemory;
 import static com.memorysettings.MemorysettingsMod.MODID;
 import static javax.swing.JOptionPane.VALUE_PROPERTY;
 import static javax.swing.event.HyperlinkEvent.EventType.ACTIVATED;
@@ -46,12 +41,8 @@ public class MemorysettingsMod
     public MemorysettingsMod()
     {
         ModLoadingContext.get().registerExtensionPoint(IExtensionPoint.DisplayTest.class, () -> new IExtensionPoint.DisplayTest(() -> "", (c, b) -> true));
-        Mod.EventBusSubscriber.Bus.MOD.bus().get().register(ModEventHandler.class);
-        Mod.EventBusSubscriber.Bus.FORGE.bus().get().register(EventHandler.class);
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::clientSetup);
 
-        if (!config.getCommonConfig().disableWarnings.get())
+        if (!config.getCommonConfig().disableWarnings)
         {
             doWarning();
         }
@@ -66,9 +57,9 @@ public class MemorysettingsMod
             return;
         }
 
-        final int configMax = (FMLEnvironment.dist != DEDICATED_SERVER) ? config.getCommonConfig().maximumClient.get() : config.getCommonConfig().maximumServer.get();
-        final int configMin = (FMLEnvironment.dist != DEDICATED_SERVER) ? config.getCommonConfig().minimumClient.get() : config.getCommonConfig().minimumServer.get();
-        final int recommendMemory = (int) Math.min(((systemMemory * 0.7) * 0.8), Math.max(configMin, Math.min(configMax, freeMemory * 0.8)));
+        final int configMax = (FMLEnvironment.dist != DEDICATED_SERVER) ? config.getCommonConfig().maximumClient : config.getCommonConfig().maximumServer;
+        final int configMin = (FMLEnvironment.dist != DEDICATED_SERVER) ? config.getCommonConfig().minimumClient : config.getCommonConfig().minimumServer;
+        final int recommendMemory = Math.min(getRecommendedMemoryForSystemMemory(systemMemory), configMax);
 
         String message = "";
         if (heapSetting > configMax)
@@ -91,10 +82,12 @@ public class MemorysettingsMod
               Component.literal(recommendMemory + "").withStyle(ChatFormatting.GREEN)));
         }
 
-        if (heapSetting > (recommendMemory + 550) && !(heapSetting > configMax || heapSetting < configMin))
+        if ((Math.abs(heapSetting - recommendMemory) / (double) recommendMemory) * 100 > config.getCommonConfig().warningTolerance && !(heapSetting > configMax
+                                                                                                                                          || heapSetting < configMin))
         {
-            message += "You have more memory allocated than recommended for your system, the recommended amount for your system is: " + recommendMemory + " mb.\n";
-            memorycheckresult.append(Component.translatable("warning.overrecommended",
+            message += "You have " + (heapSetting > recommendMemory ? "more" : "less")
+                         + " more memory allocated than recommended for your system, the recommended amount for your system is: " + recommendMemory + " mb.\n";
+            memorycheckresult.append(Component.translatable(heapSetting > recommendMemory ? "warning.overrecommended" : "warning.underrecommended",
               Component.literal(heapSetting + "").withStyle(ChatFormatting.YELLOW),
               Component.literal(recommendMemory + "").withStyle(ChatFormatting.GREEN)));
         }
@@ -182,7 +175,8 @@ public class MemorysettingsMod
             {
                 if (evt.getNewValue().equals(DISABLE_WARNING_BUTTON))
                 {
-                    config.getCommonConfig().disableWarnings.set(true);
+                    config.getCommonConfig().disableWarnings = true;
+                    config.save();
                 }
 
                 jf.dispose();
@@ -198,7 +192,7 @@ public class MemorysettingsMod
         ep.setEditable(false);
 
         ep.setText("<html><body style=\"" + style + "\">" //
-                     + config.getCommonConfig().howtolink.get()
+                     + config.getCommonConfig().howtolink
                      + "</body></html>");
 
         ep.addHyperlinkListener(event -> {
@@ -228,18 +222,40 @@ public class MemorysettingsMod
 
         if (selectedValue instanceof String && selectedValue.equals("Stop showing"))
         {
-            config.getCommonConfig().disableWarnings.set(true);
+            config.getCommonConfig().disableWarnings = true;
+            config.save();
         }
     }
 
-    @SubscribeEvent
-    public void clientSetup(FMLClientSetupEvent event)
+    public static int getRecommendedMemoryForSystemMemory(final int systemMemory)
     {
-        // Side safe client event handler
-        Mod.EventBusSubscriber.Bus.FORGE.bus().get().register(ClientEventHandler.class);
-    }
+        Map.Entry<Integer, Integer> lastEntry = null;
+        int recommendedMemory = 0;
+        for (final Map.Entry<Integer, Integer> dataEntry : config.getCommonConfig().recommendedMemory.entrySet())
+        {
+            if (systemMemory > dataEntry.getKey())
+            {
+                lastEntry = dataEntry;
+            }
+            else
+            {
+                if (lastEntry == null)
+                {
+                    lastEntry = dataEntry;
+                    break;
+                }
 
-    private void setup(final FMLCommonSetupEvent event)
-    {
+                double percent = (systemMemory - lastEntry.getKey()) / (Math.max(1d, dataEntry.getKey() - lastEntry.getKey()));
+
+                return (int) (lastEntry.getValue() + percent * (dataEntry.getValue() - lastEntry.getValue()));
+            }
+        }
+
+        if (lastEntry != null)
+        {
+            return lastEntry.getValue();
+        }
+
+        return recommendedMemory;
     }
 }
