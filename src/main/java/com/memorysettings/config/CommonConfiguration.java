@@ -1,20 +1,40 @@
 package com.memorysettings.config;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.memorysettings.MemorysettingsMod;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 public class CommonConfiguration
 {
-    public int     minimumClient   = 2500;
-    public int     minimumServer   = 2500;
-    public int     maximumClient   = 8500;
-    public int     maximumServer   = 8500;
-    public boolean disableWarnings = false;
-    public String  howtolink       = "https://apexminecrafthosting.com/how-to-allocate-more-ram/";
+    public int                   minimumClient     = 2500;
+    public int                   minimumServer     = 2500;
+    public int                   maximumClient     = 8500;
+    public int                   maximumServer     = 8500;
+    public int                   warningTolerance  = 1500;
+    public boolean               disableWarnings   = false;
+    public String                howtolink         = "https://apexminecrafthosting.com/how-to-allocate-more-ram/";
+    public Map<Integer, Integer> recommendedMemory = new LinkedHashMap<>();
 
     protected CommonConfiguration()
     {
-
+        // System memory - recommended memory
+        recommendedMemory.put(3000, 2000);
+        recommendedMemory.put(4000, 3000);
+        recommendedMemory.put(5000, 3500);
+        recommendedMemory.put(6000, 3700);
+        recommendedMemory.put(7000, 4000);
+        recommendedMemory.put(8000, 4200);
+        recommendedMemory.put(10000, 5000);
+        recommendedMemory.put(12000, 6000);
+        recommendedMemory.put(16000, 7000);
+        recommendedMemory.put(20000, 8000);
+        recommendedMemory.put(24000, 9000);
+        recommendedMemory.put(32000, 9500);
+        recommendedMemory.put(64000, 10000);
     }
 
     public JsonObject serialize()
@@ -55,6 +75,22 @@ public class CommonConfiguration
         entry6.addProperty("howtolink", howtolink);
         root.add("howtolink", entry6);
 
+        final JsonObject entry8 = new JsonObject();
+        entry8.addProperty("desc:", "Set how much the memory is allowed to deviate from the recommended for the system before warning about it, default: 1500 (mb)");
+        entry8.addProperty("warningTolerance", warningTolerance);
+        root.add("warningTolerance", entry8);
+
+        final JsonObject entry7 = new JsonObject();
+        entry7.addProperty("desc:", "Set the recommended memory values based off system memory in MB. [\"system memory:recommended\"]");
+        JsonArray array = new JsonArray();
+        for (final Map.Entry<Integer, Integer> entrydata : recommendedMemory.entrySet())
+        {
+            array.add(entrydata.getKey().toString() + ":" + entrydata.getValue().toString());
+        }
+
+        entry7.add("memory values", array);
+        root.add("recommendedMemory", entry7);
+
         return root;
     }
 
@@ -66,18 +102,20 @@ public class CommonConfiguration
             return;
         }
 
-        try
+        minimumClient = data.get("minimumClient").getAsJsonObject().get("minimumClient").getAsInt();
+        maximumClient = data.get("maximumClient").getAsJsonObject().get("maximumClient").getAsInt();
+        minimumServer = data.get("minimumServer").getAsJsonObject().get("minimumServer").getAsInt();
+        maximumServer = data.get("maximumServer").getAsJsonObject().get("maximumServer").getAsInt();
+        warningTolerance = data.get("warningTolerance").getAsJsonObject().get("warningTolerance").getAsInt();
+        disableWarnings = data.get("disableWarnings").getAsJsonObject().get("disableWarnings").getAsBoolean();
+        howtolink = data.get("howtolink").getAsJsonObject().get("howtolink").getAsString();
+        Map<Integer, Integer> loading = new LinkedHashMap<>();
+        for (final JsonElement entry : data.get("recommendedMemory").getAsJsonObject().get("memory values").getAsJsonArray())
         {
-            minimumClient = data.get("minimumClient").getAsJsonObject().get("minimumClient").getAsInt();
-            maximumClient = data.get("maximumClient").getAsJsonObject().get("maximumClient").getAsInt();
-            minimumServer = data.get("minimumServer").getAsJsonObject().get("minimumServer").getAsInt();
-            maximumServer = data.get("maximumServer").getAsJsonObject().get("maximumServer").getAsInt();
-            disableWarnings = data.get("disableWarnings").getAsJsonObject().get("disableWarnings").getAsBoolean();
-            howtolink = data.get("howtolink").getAsJsonObject().get("howtolink").getAsString();
+            String[] parsedEntry = entry.getAsString().split(":");
+            loading.put(Integer.parseInt(parsedEntry[0]), Integer.parseInt(parsedEntry[1]));
         }
-        catch (Exception e)
-        {
-            MemorysettingsMod.LOGGER.error("Could not parse config file", e);
-        }
+
+        recommendedMemory = loading;
     }
 }

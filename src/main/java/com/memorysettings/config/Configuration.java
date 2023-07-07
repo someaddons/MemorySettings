@@ -58,9 +58,10 @@ public class Configuration
             {
                 commonConfig.deserialize(gson.fromJson(Files.newBufferedReader(configPath), JsonObject.class));
             }
-            catch (IOException e)
+            catch (Exception e)
             {
-                MemorysettingsMod.LOGGER.error("Could not read config from:" + configPath, e);
+                MemorysettingsMod.LOGGER.error("Could not read config from, resetting:" + configPath, e);
+                save();
             }
         }
     }
