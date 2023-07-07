@@ -15,9 +15,11 @@ import java.awt.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Random;
 
-import static com.memorysettings.Memory.*;
+import static com.memorysettings.Memory.heapSetting;
+import static com.memorysettings.Memory.systemMemory;
 import static javax.swing.JOptionPane.VALUE_PROPERTY;
 import static javax.swing.event.HyperlinkEvent.EventType.ACTIVATED;
 import static net.fabricmc.api.EnvType.SERVER;
@@ -57,13 +59,14 @@ public class MemorysettingsMod implements ModInitializer
         {
             memorycheckresult.append(new TranslatableComponent("warning.32bit"));
             LOGGER.warn("You're using 32bit java on a 64bit system, please install 64bit java.");
+            message("You're using 32bit java on a 64bit system, please install 64bit java.");
             return;
         }
 
 
         final int configMax = (FabricLoader.getInstance().getEnvironmentType() != SERVER) ? config.getCommonConfig().maximumClient : config.getCommonConfig().maximumServer;
         final int configMin = (FabricLoader.getInstance().getEnvironmentType() != SERVER) ? config.getCommonConfig().minimumClient : config.getCommonConfig().minimumServer;
-        final int recommendMemory = (int) Math.min(((systemMemory * 0.7) * 0.8), Math.max(configMin, Math.min(configMax, freeMemory * 0.8)));
+        final int recommendMemory = Math.min(getRecommendedMemoryForSystemMemory(systemMemory), configMax);
 
         String message = "";
         if (heapSetting > configMax)
@@ -86,10 +89,14 @@ public class MemorysettingsMod implements ModInitializer
               new TextComponent(recommendMemory + "").withStyle(ChatFormatting.GREEN)));
         }
 
-        if (heapSetting > (recommendMemory + 550) && !(heapSetting > configMax || heapSetting < configMin))
+        if ((Math.abs(heapSetting - recommendMemory) / (double) recommendMemory) * 100 > config.getCommonConfig().warningTolerance && !(heapSetting > configMax
+                                                                                                                                          || heapSetting < configMin))
         {
-            message += "You have more memory allocated than recommended for your system, the recommended amount for your system is: " + recommendMemory + " mb.\n";
-            memorycheckresult.append(new TranslatableComponent("warning.overrecommended", new TextComponent(heapSetting + "").withStyle(ChatFormatting.YELLOW), new TextComponent(recommendMemory + "").withStyle(ChatFormatting.GREEN)));
+            message += "You have " + (heapSetting > recommendMemory ? "more" : "less")
+                         + " more memory allocated than recommended for your system, the recommended amount for your system is: " + recommendMemory + " mb.\n";
+            memorycheckresult.append(new TranslatableComponent(heapSetting > recommendMemory ? "warning.overrecommended" : "warning.underrecommended",
+              new TextComponent(heapSetting + "").withStyle(ChatFormatting.YELLOW),
+              new TextComponent(recommendMemory + "").withStyle(ChatFormatting.GREEN)));
         }
 
         if (recommendMemory < configMin)
@@ -108,7 +115,7 @@ public class MemorysettingsMod implements ModInitializer
 
         LOGGER.warn(message);
 
-        if (heapSetting < 1025)
+        if (heapSetting < 1525)
         {
             message(message);
         }
@@ -225,5 +232,37 @@ public class MemorysettingsMod implements ModInitializer
             config.getCommonConfig().disableWarnings = true;
             config.save();
         }
+    }
+
+    public static int getRecommendedMemoryForSystemMemory(final int systemMemory)
+    {
+        Map.Entry<Integer, Integer> lastEntry = null;
+        int recommendedMemory = 0;
+        for (final Map.Entry<Integer, Integer> dataEntry : config.getCommonConfig().recommendedMemory.entrySet())
+        {
+            if (systemMemory > dataEntry.getKey())
+            {
+                lastEntry = dataEntry;
+            }
+            else
+            {
+                if (lastEntry == null)
+                {
+                    lastEntry = dataEntry;
+                    break;
+                }
+
+                double percent = (systemMemory - lastEntry.getKey()) / (Math.max(1d, dataEntry.getKey() - lastEntry.getKey()));
+
+                return (int) (lastEntry.getValue() + percent * (dataEntry.getValue() - lastEntry.getValue()));
+            }
+        }
+
+        if (lastEntry != null)
+        {
+            return lastEntry.getValue();
+        }
+
+        return recommendedMemory;
     }
 }
