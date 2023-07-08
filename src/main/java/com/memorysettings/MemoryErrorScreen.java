@@ -1,29 +1,30 @@
 package com.memorysettings;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.Util;
-import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.network.chat.CommonComponents;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
-import net.minecraft.util.FormattedCharSequence;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.widget.button.Button;
+import net.minecraft.util.IReorderingProcessor;
+import net.minecraft.util.Util;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.common.MinecraftForge;
 
 import java.net.URI;
 import java.net.URISyntaxException;
 
+import static net.minecraft.client.gui.DialogTexts.GUI_PROCEED;
+
 public class MemoryErrorScreen extends Screen
 {
-    private final Component message;
-    private       Button    button_proceed  = null;
-    private       Button    button_howto    = null;
-    private       Button    button_noremind = null;
+    private final ITextComponent message;
+    private       Button         button_proceed  = null;
+    private       Button         button_howto    = null;
+    private       Button         button_noremind = null;
 
-    public MemoryErrorScreen(final Component message)
+    public MemoryErrorScreen(final ITextComponent message)
     {
-        super(new TextComponent(""));
+        super(new StringTextComponent(""));
         this.message = message;
         MemorysettingsMod.didDisplay = true;
     }
@@ -32,12 +33,12 @@ public class MemoryErrorScreen extends Screen
     {
         super.init();
 
-        button_proceed = new Button(this.width / 2 - 100, 140, 200, 20, CommonComponents.GUI_PROCEED, (button) -> {
+        button_proceed = new Button(this.width / 2 - 100, 140, 200, 20, GUI_PROCEED, (button) -> {
             MinecraftForge.EVENT_BUS.start();
             this.minecraft.setScreen((Screen) null);
         });
 
-        button_howto = new Button(this.width / 2 - 100, 120, 200, 20, new TranslatableComponent("button.howto"), (button) -> {
+        button_howto = new Button(this.width / 2 - 100, 120, 200, 20, new TranslationTextComponent("button.howto"), (button) -> {
             this.minecraft.keyboardHandler.setClipboard(MemorysettingsMod.config.getCommonConfig().howtolink);
             try
             {
@@ -49,7 +50,7 @@ public class MemoryErrorScreen extends Screen
             }
         });
 
-        button_noremind = new Button(this.width / 2 - 100, 160, 200, 20, new TranslatableComponent("button.stopremind"), (button) -> {
+        button_noremind = new Button(this.width / 2 - 100, 160, 200, 20, new TranslationTextComponent("button.stopremind"), (button) -> {
             MinecraftForge.EVENT_BUS.start();
             this.minecraft.setScreen((Screen) null);
             MemorysettingsMod.config.getCommonConfig().disableWarnings = true;
@@ -57,19 +58,20 @@ public class MemoryErrorScreen extends Screen
         });
 
 
-        this.addRenderableWidget(button_howto);
-        this.addRenderableWidget(button_proceed);
-        this.addRenderableWidget(button_noremind);
+        this.addButton(button_howto);
+        this.addButton(button_proceed);
+        this.addButton(button_noremind);
     }
 
-    public void render(PoseStack poseStack, int x, int y, float z)
+    public void render(MatrixStack poseStack, int x, int y, float z)
     {
         fillGradient(poseStack, 0, 0, this.width, this.height, -12574688, -11530224);
 
+        font.drawWordWrap(message, this.width / 2 - 100, 20, 220, 16777215);
+
         int yOffset = 20;
-        for (final FormattedCharSequence component : font.split(message, 220))
+        for (final IReorderingProcessor component : font.split(message, 220))
         {
-            drawCenteredString(poseStack, this.font, component, this.width / 2, yOffset, 16777215);
             yOffset += 10;
         }
 

@@ -3,7 +3,7 @@ package com.memorysettings.mixin;
 import com.memorysettings.MemoryErrorScreen;
 import com.memorysettings.MemorysettingsMod;
 import net.minecraft.client.Minecraft;
-import net.minecraftforge.client.loading.ClientModLoader;
+import net.minecraftforge.fml.client.ClientModLoader;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
