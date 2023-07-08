@@ -14,7 +14,7 @@ public class CommonConfiguration
     public int                   minimumServer     = 2500;
     public int                   maximumClient     = 8500;
     public int                   maximumServer     = 8500;
-    public int                   warningTolerance  = 1500;
+    public int                   warningTolerance  = 30;
     public boolean               disableWarnings   = false;
     public String                howtolink         = "https://apexminecrafthosting.com/how-to-allocate-more-ram/";
     public Map<Integer, Integer> recommendedMemory = new LinkedHashMap<>();
@@ -76,7 +76,7 @@ public class CommonConfiguration
         root.add("howtolink", entry6);
 
         final JsonObject entry8 = new JsonObject();
-        entry8.addProperty("desc:", "Set how much the memory is allowed to deviate from the recommended for the system before warning about it, default: 1500 (mb)");
+        entry8.addProperty("desc:", "Set how many percent the memory is allowed to deviate from the recommended for the system before warning about it, default: 30, max 100");
         entry8.addProperty("warningTolerance", warningTolerance);
         root.add("warningTolerance", entry8);
 
@@ -117,5 +117,12 @@ public class CommonConfiguration
         }
 
         recommendedMemory = loading;
+
+        // Fix old config
+        if (warningTolerance > 200)
+        {
+            warningTolerance = 30;
+            MemorysettingsMod.config.save();
+        }
     }
 }
