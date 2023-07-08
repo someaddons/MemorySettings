@@ -4,7 +4,6 @@ import com.memorysettings.config.Configuration;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.ChatFormatting;
-import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import org.apache.logging.log4j.LogManager;
@@ -27,12 +26,12 @@ import static net.fabricmc.api.EnvType.SERVER;
 // The value here should match an entry in the META-INF/mods.toml file
 public class MemorysettingsMod implements ModInitializer
 {
-    public static final  String           MODID                  = "memorysettings";
-    public static final  Logger           LOGGER                 = LogManager.getLogger();
-    private static final String           DISABLE_WARNING_BUTTON = "Stop showing";
-    public static        Configuration    config                 = new Configuration();
-    public static        Random           rand                   = new Random();
-    public static        MutableComponent memorycheckresult      = new TextComponent("");
+    public static final  String        MODID                  = "memorysettings";
+    public static final  Logger        LOGGER                 = LogManager.getLogger();
+    private static final String        DISABLE_WARNING_BUTTON = "Stop showing";
+    public static        Configuration config                 = new Configuration();
+    public static        Random        rand                   = new Random();
+    public static        TextComponent memorycheckresult      = new TextComponent("");
 
     public MemorysettingsMod()
     {

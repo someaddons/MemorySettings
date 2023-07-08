@@ -4,8 +4,6 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.Util;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.network.chat.CommonComponents;
-import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.util.FormattedCharSequence;
@@ -13,14 +11,16 @@ import net.minecraft.util.FormattedCharSequence;
 import java.net.URI;
 import java.net.URISyntaxException;
 
+import static net.minecraft.network.chat.CommonComponents.GUI_PROCEED;
+
 public class MemoryErrorScreen extends Screen
 {
-    private final Component message;
-    private       Button    button_proceed  = null;
-    private       Button    button_howto    = null;
-    private       Button    button_noremind = null;
+    private final TextComponent message;
+    private       Button        button_proceed  = null;
+    private       Button        button_howto    = null;
+    private       Button        button_noremind = null;
 
-    public MemoryErrorScreen(final Component message)
+    public MemoryErrorScreen(final TextComponent message)
     {
         super(new TextComponent(""));
         this.message = message;
@@ -30,7 +30,7 @@ public class MemoryErrorScreen extends Screen
     {
         super.init();
 
-        button_proceed = new Button(this.width / 2 - 100, 140, 200, 20, CommonComponents.GUI_PROCEED, (button) -> {
+        button_proceed = new Button(this.width / 2 - 100, 140, 200, 20, GUI_PROCEED, (button) -> {
             this.minecraft.setScreen((Screen) null);
         });
 
@@ -53,19 +53,20 @@ public class MemoryErrorScreen extends Screen
         });
 
 
-        this.addRenderableWidget(button_howto);
-        this.addRenderableWidget(button_proceed);
-        this.addRenderableWidget(button_noremind);
+        this.addButton(button_howto);
+        this.addButton(button_proceed);
+        this.addButton(button_noremind);
     }
 
     public void render(PoseStack poseStack, int x, int y, float z)
     {
         fillGradient(poseStack, 0, 0, this.width, this.height, -12574688, -11530224);
 
+        font.drawWordWrap(message, this.width / 2 - 100, 20, 220, 16777215);
+
         int yOffset = 20;
         for (final FormattedCharSequence component : font.split(message, 220))
         {
-            drawCenteredString(poseStack, this.font, component, this.width / 2, yOffset, 16777215);
             yOffset += 10;
         }
 
