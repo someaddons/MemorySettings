@@ -1,7 +1,7 @@
 {
   "required": false,
   "package": "com.memorysettings.mixin",
-  "compatibilityLevel": "JAVA_16",
+  "compatibilityLevel": "JAVA_8",
   "plugin": "com.memorysettings.MixinConfig",
   "mixins": [
   ],
