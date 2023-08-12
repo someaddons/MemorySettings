@@ -1,12 +1,12 @@
 package com.memorysettings;
 
-import com.memorysettings.config.Configuration;
+import com.cupboard.config.CupboardConfig;
+import com.memorysettings.config.CommonConfiguration;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.util.Mth;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -27,18 +27,15 @@ import static net.fabricmc.api.EnvType.SERVER;
 // The value here should match an entry in the META-INF/mods.toml file
 public class MemorysettingsMod implements ModInitializer
 {
-    public static final  String           MODID                  = "memorysettings";
-    public static final  Logger           LOGGER                 = LogManager.getLogger();
-    private static final String           DISABLE_WARNING_BUTTON = "Stop showing";
-    public static        Configuration    config                 = new Configuration();
-    public static        Random           rand                   = new Random();
-    public static        MutableComponent memorycheckresult      = Component.empty();
+    public static final  String                              MODID                  = "memorysettings";
+    public static final  Logger                              LOGGER                 = LogManager.getLogger();
+    private static final String                              DISABLE_WARNING_BUTTON = "Stop showing";
+    public static        CupboardConfig<CommonConfiguration> config                 = new CupboardConfig<>(MODID, new CommonConfiguration());
+    public static        Random                              rand                   = new Random();
+    public static        MutableComponent                    memorycheckresult      = Component.empty();
 
     public MemorysettingsMod()
     {
-        config = new Configuration();
-        config.load();
-
         if (!config.getCommonConfig().disableWarnings)
         {
             doWarning();
@@ -89,7 +86,8 @@ public class MemorysettingsMod implements ModInitializer
               Component.literal(recommendMemory + "").withStyle(ChatFormatting.GREEN)));
         }
 
-        if ((Math.abs(heapSetting - recommendMemory) /(double) recommendMemory) * 100 > config.getCommonConfig().warningTolerance && !(heapSetting > configMax || heapSetting < configMin))
+        if ((Math.abs(heapSetting - recommendMemory) / (double) recommendMemory) * 100 > config.getCommonConfig().warningTolerance && !(heapSetting > configMax
+                                                                                                                                          || heapSetting < configMin))
         {
             message += "You have " + (heapSetting > recommendMemory ? "more" : "less")
                          + " more memory allocated than recommended for your system, the recommended amount for your system is: " + recommendMemory + " mb.\n";
