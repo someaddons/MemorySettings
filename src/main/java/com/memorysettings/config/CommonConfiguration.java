@@ -1,5 +1,6 @@
 package com.memorysettings.config;
 
+import com.cupboard.config.ICommonConfig;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -8,7 +9,7 @@ import com.memorysettings.MemorysettingsMod;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-public class CommonConfiguration
+public class CommonConfiguration implements ICommonConfig
 {
     public int                   minimumClient     = 2500;
     public int                   minimumServer     = 2500;
@@ -19,7 +20,7 @@ public class CommonConfiguration
     public String                howtolink         = "https://apexminecrafthosting.com/how-to-allocate-more-ram/";
     public Map<Integer, Integer> recommendedMemory = new LinkedHashMap<>();
 
-    protected CommonConfiguration()
+    public CommonConfiguration()
     {
         // System memory - recommended memory
         recommendedMemory.put(3000, 2000);
@@ -96,12 +97,6 @@ public class CommonConfiguration
 
     public void deserialize(JsonObject data)
     {
-        if (data == null)
-        {
-            MemorysettingsMod.LOGGER.error("Config file was empty!");
-            return;
-        }
-
         minimumClient = data.get("minimumClient").getAsJsonObject().get("minimumClient").getAsInt();
         maximumClient = data.get("maximumClient").getAsJsonObject().get("maximumClient").getAsInt();
         minimumServer = data.get("minimumServer").getAsJsonObject().get("minimumServer").getAsInt();

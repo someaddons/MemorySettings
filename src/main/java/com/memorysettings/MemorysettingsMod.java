@@ -1,6 +1,7 @@
 package com.memorysettings;
 
-import com.memorysettings.config.Configuration;
+import com.cupboard.config.CupboardConfig;
+import com.memorysettings.config.CommonConfiguration;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -30,19 +31,18 @@ import static net.minecraftforge.api.distmarker.Dist.DEDICATED_SERVER;
 @Mod(MODID)
 public class MemorysettingsMod
 {
-    public static final  String           MODID                  = "memorysettings";
-    public static final  Logger           LOGGER                 = LogManager.getLogger();
-    private static final String           DISABLE_WARNING_BUTTON = "Stop showing";
-    public static        Configuration    config                 = new Configuration();
-    public static        Random           rand                   = new Random();
-    public static        MutableComponent memorycheckresult      = Component.empty();
-    public static        boolean          didDisplay             = false;
+    public static final  String                              MODID                  = "memorysettings";
+    public static final  Logger                              LOGGER                 = LogManager.getLogger();
+    private static final String                              DISABLE_WARNING_BUTTON = "Stop showing";
+    public static        CupboardConfig<CommonConfiguration> config                 = new CupboardConfig<>(MODID, new CommonConfiguration());
+    public static        Random                              rand                   = new Random();
+    public static        MutableComponent                    memorycheckresult      = Component.empty();
+    public static        boolean                             didDisplay             = false;
 
     public MemorysettingsMod()
     {
         ModLoadingContext.get().registerExtensionPoint(IExtensionPoint.DisplayTest.class, () -> new IExtensionPoint.DisplayTest(() -> "", (c, b) -> true));
 
-        config.load();
         if (!config.getCommonConfig().disableWarnings)
         {
             doWarning();
