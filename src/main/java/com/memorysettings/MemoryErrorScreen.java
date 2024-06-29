@@ -60,8 +60,6 @@ public class MemoryErrorScreen extends Screen
     public void render(GuiGraphics graphics, int x, int y, float z)
     {
         {
-            graphics.fillGradient(0, 0, this.width, this.height, -12574688, -11530224);
-
             int yOffset = 20;
             for (final FormattedCharSequence component : font.split(message, 220))
             {
@@ -69,12 +67,19 @@ public class MemoryErrorScreen extends Screen
                 yOffset += 10;
             }
 
+            graphics.fillGradient(0, 0, this.width, this.height, -12574688, -11530224);
             button_proceed.setY(20 + yOffset);
             button_howto.setY(40 + yOffset);
             button_noremind.setY(60 + yOffset);
 
             super.render(graphics, x, y, z);
         }
+    }
+
+    @Override
+    public void renderBackground(GuiGraphics guiGraphics, int i, int j, float f)
+    {
+        // NO blur!
     }
 
     public boolean shouldCloseOnEsc()
