@@ -1,13 +1,13 @@
 package com.memorysettings;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.Util;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.FormattedCharSequence;
-import net.minecraftforge.common.MinecraftForge;
+import net.neoforged.neoforge.common.NeoForge;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -30,12 +30,12 @@ public class MemoryErrorScreen extends Screen
     {
         super.init();
 
-        button_proceed = new Button(this.width / 2 - 100, 140, 200, 20, CommonComponents.GUI_PROCEED, (button) -> {
-            MinecraftForge.EVENT_BUS.start();
+        button_proceed = Button.builder(CommonComponents.GUI_PROCEED, (button) -> {
+            NeoForge.EVENT_BUS.start();
             this.minecraft.setScreen((Screen) null);
-        });
+        }).bounds(this.width / 2 - 100, 140, 200, 20).build();
 
-        button_howto = new Button(this.width / 2 - 100, 120, 200, 20, Component.translatable("button.howto"), (button) -> {
+        button_howto = Button.builder(Component.translatable("button.howto"), (button) -> {
             this.minecraft.keyboardHandler.setClipboard(MemorysettingsMod.config.getCommonConfig().howtolink);
             try
             {
@@ -45,14 +45,14 @@ public class MemoryErrorScreen extends Screen
             {
                 e.printStackTrace();
             }
-        });
+        }).bounds(this.width / 2 - 100, 120, 200, 20).build();
 
-        button_noremind = new Button(this.width / 2 - 100, 160, 200, 20, Component.translatable("button.stopremind"), (button) -> {
-            MinecraftForge.EVENT_BUS.start();
+        button_noremind = Button.builder(Component.translatable("button.stopremind"), (button) -> {
+            NeoForge.EVENT_BUS.start();
             this.minecraft.setScreen((Screen) null);
             MemorysettingsMod.config.getCommonConfig().disableWarnings = true;
             MemorysettingsMod.config.save();
-        });
+        }).bounds(this.width / 2 - 100, 160, 200, 20).build();
 
 
         this.addRenderableWidget(button_howto);
@@ -60,22 +60,30 @@ public class MemoryErrorScreen extends Screen
         this.addRenderableWidget(button_noremind);
     }
 
-    public void render(PoseStack poseStack, int x, int y, float z)
+    @Override
+    public void render(GuiGraphics graphics, int x, int y, float z)
     {
-        fillGradient(poseStack, 0, 0, this.width, this.height, -12574688, -11530224);
-
-        int yOffset = 20;
-        for (final FormattedCharSequence component : font.split(message, 220))
         {
-            drawCenteredString(poseStack, this.font, component, this.width / 2, yOffset, 16777215);
-            yOffset += 10;
+            int yOffset = 20;
+            for (final FormattedCharSequence component : font.split(message, 220))
+            {
+                graphics.drawCenteredString(this.font, component, this.width / 2, yOffset, 16777215);
+                yOffset += 10;
+            }
+
+            graphics.fillGradient(0, 0, this.width, this.height, -12574688, -11530224);
+            button_proceed.setY(20 + yOffset);
+            button_howto.setY(40 + yOffset);
+            button_noremind.setY(60 + yOffset);
+
+            super.render(graphics, x, y, z);
         }
+    }
 
-        button_proceed.y = 20 + yOffset;
-        button_howto.y = 40 + yOffset;
-        button_noremind.y = 60 + yOffset;
-
-        super.render(poseStack, x, y, z);
+    @Override
+    public void renderBackground(GuiGraphics guiGraphics, int i, int j, float f)
+    {
+        // NO blur!
     }
 
     public boolean shouldCloseOnEsc()

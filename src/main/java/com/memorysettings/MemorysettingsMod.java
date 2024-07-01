@@ -5,10 +5,10 @@ import com.memorysettings.config.CommonConfiguration;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraftforge.fml.IExtensionPoint;
-import net.minecraftforge.fml.ModLoadingContext;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.loading.FMLEnvironment;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.fml.ModContainer;
+import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.loading.FMLEnvironment;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -25,7 +25,7 @@ import static com.memorysettings.Memory.systemMemory;
 import static com.memorysettings.MemorysettingsMod.MODID;
 import static javax.swing.JOptionPane.VALUE_PROPERTY;
 import static javax.swing.event.HyperlinkEvent.EventType.ACTIVATED;
-import static net.minecraftforge.api.distmarker.Dist.DEDICATED_SERVER;
+import static net.neoforged.api.distmarker.Dist.DEDICATED_SERVER;
 
 // The value here should match an entry in the META-INF/mods.toml file
 @Mod(MODID)
@@ -39,10 +39,8 @@ public class MemorysettingsMod
     public static        MutableComponent                    memorycheckresult      = Component.empty();
     public static        boolean                             didDisplay             = false;
 
-    public MemorysettingsMod()
+    public MemorysettingsMod(IEventBus modEventBus, ModContainer modContainer)
     {
-        ModLoadingContext.get().registerExtensionPoint(IExtensionPoint.DisplayTest.class, () -> new IExtensionPoint.DisplayTest(() -> "", (c, b) -> true));
-
         config.load();
         if (!config.getCommonConfig().disableWarnings)
         {
