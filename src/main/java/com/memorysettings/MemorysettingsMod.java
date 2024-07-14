@@ -62,7 +62,7 @@ public class MemorysettingsMod
         final int recommendMemory = Math.min(getRecommendedMemoryForSystemMemory(systemMemory), configMax);
 
         String message = "";
-        if (heapSetting > configMax)
+        if (heapSetting > configMax + 250)
         {
             message += "You have more memory allocated(" + heapSetting + "mb) than recommended for this pack, the maximum is: " + configMax
                          + "mb.\nThe recommended amount for your system is: " + recommendMemory + " mb.\n";
@@ -72,7 +72,7 @@ public class MemorysettingsMod
               Component.literal(recommendMemory + "").withStyle(ChatFormatting.GREEN)));
         }
 
-        if (heapSetting < configMin)
+        if (heapSetting < configMin - 250)
         {
             message += "You have less memory allocated(" + heapSetting + "mb) than recommended for this pack, the minimum is: " + configMin
                          + "mb.\nThe recommended amount for your system is: " + recommendMemory + " mb.\n";
@@ -92,7 +92,7 @@ public class MemorysettingsMod
               Component.literal(recommendMemory + "").withStyle(ChatFormatting.GREEN)));
         }
 
-        if (recommendMemory < configMin)
+        if (recommendMemory < configMin - 250)
         {
             message += "The recommended for your system is lower than the required minimum of " + configMin
                          + "mb for this pack, things may not work out so well.\nMost common sign of insufficient ram is frequent stutters.\n";
