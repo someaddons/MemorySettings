@@ -7,7 +7,7 @@
   "mixins": [
   ],
   "client": [
-    "ClienModLoaderMixin"
+    "MinecraftMixin"
   ],
   "injectors": {
     "defaultRequire": 1
