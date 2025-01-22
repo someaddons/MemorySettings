@@ -21,6 +21,8 @@ public class CommonConfiguration implements ICommonConfig
     public int                   warningTolerance  = 30;
     public boolean               disableWarnings   = false;
     public String                howtolink         = "https://apexminecrafthosting.com/how-to-allocate-more-ram/";
+    public String earlyWarningMinimumMemory = "You have allocated less memory( %d MB) than the recommended minimum for this pack: %d MB.\n"
+        + "The suggested amount for your system is: %d mb.\n Click OK to visit a wiki with instructions on how to allocate more memory, or Cancel to ignore this warning.";
     public Map<Integer, Integer> recommendedMemory = new LinkedHashMap<>();
 
     public CommonConfiguration()
@@ -74,15 +76,21 @@ public class CommonConfiguration implements ICommonConfig
         entry5.addProperty("disableWarnings", disableWarnings);
         root.add("disableWarnings", entry5);
 
+        final JsonObject entry8 = new JsonObject();
+        entry8.addProperty("desc:",
+            "Set the message used for the early warning screen, notifying the user of too low memory set. You can use %d as placeholder for these memoryvalues, in order: currentmemory, minimum, recommendMemory");
+        entry8.addProperty("earlyWarningMinimumMemory", earlyWarningMinimumMemory);
+        root.add("earlyWarningMinimumMemory", entry8);
+
         final JsonObject entry6 = new JsonObject();
         entry6.addProperty("desc:", "Set the link used to guide players to a website with instructions to change memory allocation");
         entry6.addProperty("howtolink", howtolink);
         root.add("howtolink", entry6);
 
-        final JsonObject entry8 = new JsonObject();
-        entry8.addProperty("desc:", "Set how many percent the memory is allowed to deviate from the recommended for the system before warning about it, default: 30, max 100");
-        entry8.addProperty("warningTolerance", warningTolerance);
-        root.add("warningTolerance", entry8);
+        final JsonObject entry12 = new JsonObject();
+        entry12.addProperty("desc:", "Set how many percent the memory is allowed to deviate from the recommended for the system before warning about it, default: 30, max 100");
+        entry12.addProperty("warningTolerance", warningTolerance);
+        root.add("warningTolerance", entry12);
 
         final JsonObject entry7 = new JsonObject();
         entry7.addProperty("desc:", "Set the recommended memory values based off system memory in MB. [\"system memory:recommended\"]");
@@ -115,12 +123,6 @@ public class CommonConfiguration implements ICommonConfig
         }
 
         recommendedMemory = loading;
-
-        // Fix old config
-        if (warningTolerance > 200)
-        {
-            warningTolerance = 30;
-            config.save();
-        }
+        earlyWarningMinimumMemory = data.get("earlyWarningMinimumMemory").getAsJsonObject().get("earlyWarningMinimumMemory").getAsString();
     }
 }
