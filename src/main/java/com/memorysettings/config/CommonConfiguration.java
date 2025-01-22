@@ -1,17 +1,20 @@
 package com.memorysettings.config;
 
+import com.cupboard.config.CupboardConfig;
 import com.cupboard.config.ICommonConfig;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.memorysettings.MemorysettingsMod;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import static com.memorysettings.MemorysettingsMod.MODID;
+
 public class CommonConfiguration implements ICommonConfig
 {
-    public int                   minimumClient     = 2500;
+    public static CupboardConfig<CommonConfiguration> config        = new CupboardConfig<>(MODID, new CommonConfiguration());
+    public        int                                 minimumClient = 2500;
     public int                   minimumServer     = 2500;
     public int                   maximumClient     = 8500;
     public int                   maximumServer     = 8500;
@@ -117,7 +120,7 @@ public class CommonConfiguration implements ICommonConfig
         if (warningTolerance > 200)
         {
             warningTolerance = 30;
-            MemorysettingsMod.config.save();
+            config.save();
         }
     }
 }

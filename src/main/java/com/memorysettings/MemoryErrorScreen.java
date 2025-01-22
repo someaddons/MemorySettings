@@ -1,5 +1,6 @@
 package com.memorysettings;
 
+import com.memorysettings.config.CommonConfiguration;
 import net.minecraft.Util;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
@@ -7,6 +8,7 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.FormattedCharSequence;
+import org.lwjgl.util.tinyfd.TinyFileDialogs;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -33,10 +35,10 @@ public class MemoryErrorScreen extends Screen
         }).bounds(this.width / 2 - 100, 140, 200, 20).build();
 
         button_howto = Button.builder(Component.translatable("button.howto"), (button) -> {
-            this.minecraft.keyboardHandler.setClipboard(MemorysettingsMod.config.getCommonConfig().howtolink);
+            this.minecraft.keyboardHandler.setClipboard(CommonConfiguration.config.getCommonConfig().howtolink);
             try
             {
-                Util.getPlatform().openUri(new URI(MemorysettingsMod.config.getCommonConfig().howtolink));
+                Util.getPlatform().openUri(new URI(CommonConfiguration.config.getCommonConfig().howtolink));
             }
             catch (URISyntaxException e)
             {
@@ -46,8 +48,8 @@ public class MemoryErrorScreen extends Screen
 
         button_noremind = Button.builder(Component.translatable("button.stopremind"), (button) -> {
             this.minecraft.setScreen((Screen) null);
-            MemorysettingsMod.config.getCommonConfig().disableWarnings = true;
-            MemorysettingsMod.config.save();
+            CommonConfiguration.config.getCommonConfig().disableWarnings = true;
+            CommonConfiguration.config.save();
         }).bounds(this.width / 2 - 100, 160, 200, 20).build();
 
 
@@ -80,5 +82,26 @@ public class MemoryErrorScreen extends Screen
     public boolean shouldCloseOnEsc()
     {
         return true;
+    }
+
+    public static boolean showEarlyScreenFor(final String message, final URI link)
+    {
+        final boolean result = TinyFileDialogs.tinyfd_messageBox(
+            "Memory Settings",
+            message,
+            "okcancel",
+            "info",
+            true);
+
+        if (result)
+        {
+            if (link != null)
+            {
+                Util.getPlatform().openUri(link);
+            }
+            Runtime.getRuntime().exit(0);
+        }
+
+        return result;
     }
 }
