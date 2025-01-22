@@ -41,13 +41,10 @@ public class Memory
 
         if (heapSetting < configMin - 150)
         {
-            String message = "You have less memory allocated(" + heapSetting + "mb) than recommended for this pack, the minimum is: " + configMin + "mb.\n"
-                + "The recommended amount for your system is: " + recommendMemory + " mb.\n";
+            String message = String.format(CommonConfiguration.config.getCommonConfig().earlyWarningMinimumMemory, heapSetting, configMin, recommendMemory);
 
             if (!dedi)
             {
-                message += " Click OK to visit a wiki how-to, Cancel ignores this warning";
-
                 URI uri = null;
                 try
                 {
