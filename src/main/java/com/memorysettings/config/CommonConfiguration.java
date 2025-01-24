@@ -5,6 +5,8 @@ import com.cupboard.config.ICommonConfig;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -13,7 +15,8 @@ import static com.memorysettings.MemorysettingsMod.MODID;
 
 public class CommonConfiguration implements ICommonConfig
 {
-    public static CupboardConfig<CommonConfiguration> config        = new CupboardConfig<>(MODID, new CommonConfiguration());
+    public static final Logger                              LOGGER = LogManager.getLogger();
+    public static       CupboardConfig<CommonConfiguration> config = new CupboardConfig<>(MODID, new CommonConfiguration());
     public        int                                 minimumClient = 2500;
     public int                   minimumServer     = 2500;
     public int                   maximumClient     = 8500;

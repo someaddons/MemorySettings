@@ -1,5 +1,6 @@
 package com.memorysettings;
 
+import com.memorysettings.config.CommonConfiguration;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -7,8 +8,6 @@ import net.minecraftforge.fml.IExtensionPoint;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.loading.FMLEnvironment;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import java.util.Random;
 
@@ -23,7 +22,6 @@ import static net.minecraftforge.api.distmarker.Dist.DEDICATED_SERVER;
 public class MemorysettingsMod
 {
     public static final String           MODID             = "memorysettings";
-    public static final Logger           LOGGER            = LogManager.getLogger();
     public static       Random           rand              = new Random();
     public static       MutableComponent memorycheckresult = Component.empty();
     public static       boolean          didDisplay        = false;
@@ -34,6 +32,7 @@ public class MemorysettingsMod
 
         if (!config.getCommonConfig().disableWarnings)
         {
+            Memory.doEarlyWarnings();
             doWarning();
         }
     }
@@ -91,6 +90,6 @@ public class MemorysettingsMod
             return;
         }
 
-        LOGGER.warn(message);
+        CommonConfiguration.LOGGER.warn(message);
     }
 }
