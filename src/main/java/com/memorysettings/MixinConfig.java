@@ -1,5 +1,6 @@
 package com.memorysettings;
 
+import com.memorysettings.config.CommonConfiguration;
 import org.objectweb.asm.tree.ClassNode;
 import org.spongepowered.asm.mixin.extensibility.IMixinConfigPlugin;
 import org.spongepowered.asm.mixin.extensibility.IMixinInfo;
@@ -18,7 +19,7 @@ public class MixinConfig implements IMixinConfigPlugin
         }
         catch (Exception e)
         {
-            MemorysettingsMod.LOGGER.warn("Exception during memory checking:", e);
+            CommonConfiguration.LOGGER.warn("Exception during memory checking:", e);
         }
     }
 
