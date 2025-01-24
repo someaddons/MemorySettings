@@ -21,7 +21,6 @@ public class Memory
         systemMemory = (int) (((com.sun.management.OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean()).getTotalMemorySize() / 1048576);
         freeMemory = (int) (((com.sun.management.OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean()).getFreeMemorySize() / 1048576);
         heapSetting = (int) (ManagementFactory.getMemoryMXBean().getHeapMemoryUsage().getMax() / 1048576);
-        doEarlyWarnings();
     }
 
     public static void doEarlyWarnings()
@@ -52,14 +51,14 @@ public class Memory
                 }
                 catch (URISyntaxException e)
                 {
-                    MemorysettingsMod.LOGGER.warn("Failed to parse url: " + CommonConfiguration.config.getCommonConfig().howtolink, e);
+                    CommonConfiguration.LOGGER.warn("Failed to parse url: " + CommonConfiguration.config.getCommonConfig().howtolink, e);
                 }
 
-                MemoryErrorScreen.showEarlyScreenFor(message, uri);
+                EarlyWarning.showEarlyScreenFor(message, uri);
             }
             else
             {
-                MemorysettingsMod.LOGGER.warn(message);
+                CommonConfiguration.LOGGER.warn(message);
             }
         }
 
@@ -76,13 +75,13 @@ public class Memory
                 }
                 catch (URISyntaxException e)
                 {
-                    MemorysettingsMod.LOGGER.warn("Failed to parse url: https://adoptopenjdk.net/releases.html", e);
+                    CommonConfiguration.LOGGER.warn("Failed to parse url: https://adoptopenjdk.net/releases.html", e);
                 }
-                MemoryErrorScreen.showEarlyScreenFor(message, uri);
+                EarlyWarning.showEarlyScreenFor(message, uri);
             }
             else
             {
-                MemorysettingsMod.LOGGER.warn(message + " you can find it here: https://adoptopenjdk.net/releases.html");
+                CommonConfiguration.LOGGER.warn(message + " you can find it here: https://adoptopenjdk.net/releases.html");
             }
         }
     }

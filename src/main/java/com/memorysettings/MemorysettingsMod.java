@@ -1,34 +1,31 @@
 package com.memorysettings;
 
-import com.cupboard.config.CupboardConfig;
 import com.memorysettings.config.CommonConfiguration;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import java.util.Random;
 
 import static com.memorysettings.Memory.*;
+import static com.memorysettings.config.CommonConfiguration.config;
 import static net.fabricmc.api.EnvType.SERVER;
 
 // The value here should match an entry in the META-INF/mods.toml file
 public class MemorysettingsMod implements ModInitializer
 {
-    public static final  String                              MODID                  = "memorysettings";
-    public static final  Logger                              LOGGER                 = LogManager.getLogger();
-    private static final String                              DISABLE_WARNING_BUTTON = "Stop showing";
-    public static        CupboardConfig<CommonConfiguration> config                 = new CupboardConfig<>(MODID, new CommonConfiguration());
-    public static        Random                              rand                   = new Random();
-    public static        MutableComponent                    memorycheckresult      = Component.empty();
+    public static final  String           MODID                  = "memorysettings";
+    private static final String           DISABLE_WARNING_BUTTON = "Stop showing";
+    public static        Random           rand                   = new Random();
+    public static        MutableComponent memorycheckresult      = Component.empty();
 
     public MemorysettingsMod()
     {
         if (!config.getCommonConfig().disableWarnings)
         {
+            Memory.doEarlyWarnings();
             doWarning();
         }
     }
@@ -92,6 +89,6 @@ public class MemorysettingsMod implements ModInitializer
             return;
         }
 
-        LOGGER.warn(message);
+        CommonConfiguration.LOGGER.warn(message);
     }
 }
