@@ -9,7 +9,6 @@ import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.FormattedCharSequence;
 import net.neoforged.neoforge.common.NeoForge;
-import org.lwjgl.util.tinyfd.TinyFileDialogs;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -91,26 +90,5 @@ public class MemoryErrorScreen extends Screen
     public boolean shouldCloseOnEsc()
     {
         return true;
-    }
-
-    public static boolean showEarlyScreenFor(final String message, final URI link)
-    {
-        final boolean result = TinyFileDialogs.tinyfd_messageBox(
-            "Memory Settings",
-            message,
-            "okcancel",
-            "info",
-            true);
-
-        if (result)
-        {
-            if (link != null)
-            {
-                Util.getPlatform().openUri(link);
-            }
-            Runtime.getRuntime().exit(0);
-        }
-
-        return result;
     }
 }

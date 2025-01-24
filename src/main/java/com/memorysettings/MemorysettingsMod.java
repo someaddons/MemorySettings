@@ -8,8 +8,6 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.loading.FMLEnvironment;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import java.util.Random;
 
@@ -23,7 +21,6 @@ import static net.neoforged.api.distmarker.Dist.DEDICATED_SERVER;
 public class MemorysettingsMod
 {
     public static final  String           MODID                  = "memorysettings";
-    public static final  Logger           LOGGER                 = LogManager.getLogger();
     private static final String           DISABLE_WARNING_BUTTON = "Stop showing";
     public static        Random           rand                   = new Random();
     public static        MutableComponent memorycheckresult      = Component.empty();
@@ -31,9 +28,9 @@ public class MemorysettingsMod
 
     public MemorysettingsMod(IEventBus modEventBus, ModContainer modContainer)
     {
-        CommonConfiguration.config.load();
         if (!CommonConfiguration.config.getCommonConfig().disableWarnings)
         {
+            Memory.doEarlyWarnings();
             doWarning();
         }
     }
@@ -91,6 +88,6 @@ public class MemorysettingsMod
             return;
         }
 
-        LOGGER.warn(message);
+        CommonConfiguration.LOGGER.warn(message);
     }
 }
