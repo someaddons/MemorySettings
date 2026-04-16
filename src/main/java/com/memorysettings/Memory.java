@@ -30,7 +30,7 @@ public class Memory
             return;
         }
 
-        final boolean dedi = FMLEnvironment.dist == DEDICATED_SERVER;
+        final boolean dedi = FMLEnvironment.getDist() == DEDICATED_SERVER;
 
         final int configMax =
             !dedi ? CommonConfiguration.config.getCommonConfig().maximumClient : CommonConfiguration.config.getCommonConfig().maximumServer;

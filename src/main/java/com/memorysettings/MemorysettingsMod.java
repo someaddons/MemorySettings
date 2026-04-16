@@ -38,9 +38,13 @@ public class MemorysettingsMod
     public static void doWarning()
     {
         final int configMax =
-            (FMLEnvironment.dist != DEDICATED_SERVER) ? CommonConfiguration.config.getCommonConfig().maximumClient : CommonConfiguration.config.getCommonConfig().maximumServer;
+            (FMLEnvironment.getDist() != DEDICATED_SERVER)
+                ? CommonConfiguration.config.getCommonConfig().maximumClient
+                : CommonConfiguration.config.getCommonConfig().maximumServer;
         final int configMin =
-            (FMLEnvironment.dist != DEDICATED_SERVER) ? CommonConfiguration.config.getCommonConfig().minimumClient : CommonConfiguration.config.getCommonConfig().minimumServer;
+            (FMLEnvironment.getDist() != DEDICATED_SERVER)
+                ? CommonConfiguration.config.getCommonConfig().minimumClient
+                : CommonConfiguration.config.getCommonConfig().minimumServer;
         final int recommendMemory = Math.min(Memory.getRecommendedMemoryForSystemMemory(systemMemory), configMax);
 
         String message = "";
