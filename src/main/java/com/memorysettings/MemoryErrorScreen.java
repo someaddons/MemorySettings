@@ -1,13 +1,14 @@
 package com.memorysettings;
 
 import com.memorysettings.config.CommonConfiguration;
-import net.minecraft.Util;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.MultiLineTextWidget;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.FormattedCharSequence;
+import net.minecraft.util.Util;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -51,34 +52,36 @@ public class MemoryErrorScreen extends Screen
             CommonConfiguration.config.save();
         }).bounds(this.width / 2 - 100, 160, 200, 20).build();
 
-
         this.addRenderableWidget(button_howto);
         this.addRenderableWidget(button_proceed);
         this.addRenderableWidget(button_noremind);
+        int yOffset = 20;
+        for (final FormattedCharSequence component : font.split(message, 220))
+        {
+            yOffset += 10;
+        }
+
+        button_proceed.setY(20 + yOffset);
+        button_howto.setY(40 + yOffset);
+        button_noremind.setY(60 + yOffset);
+
+        final MultiLineTextWidget textWidget = new MultiLineTextWidget(message, this.font).setMaxWidth(220).setCentered(true);
+        textWidget.setX(this.width / 2 - 100);
+        textWidget.setY(20);
+        this.addRenderableWidget(textWidget);
     }
 
     @Override
-    public void render(GuiGraphics graphics, int x, int y, float z)
+    public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a)
     {
         {
-            int yOffset = 20;
-            for (final FormattedCharSequence component : font.split(message, 220))
-            {
-                graphics.drawCenteredString(this.font, component, this.width / 2, yOffset, 16777215);
-                yOffset += 10;
-            }
-
             graphics.fillGradient(0, 0, this.width, this.height, -12574688, -11530224);
-            button_proceed.setY(20 + yOffset);
-            button_howto.setY(40 + yOffset);
-            button_noremind.setY(60 + yOffset);
-
-            super.render(graphics, x, y, z);
+            super.extractRenderState(graphics, mouseX, mouseY, a);
         }
     }
 
     @Override
-    public void renderBackground(GuiGraphics guiGraphics, int i, int j, float f)
+    protected void extractBlurredBackground(GuiGraphicsExtractor graphics)
     {
         // NO blur!
     }
