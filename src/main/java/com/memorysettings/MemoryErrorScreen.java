@@ -34,7 +34,7 @@ public class MemoryErrorScreen extends Screen
 
         button_proceed = Button.builder(CommonComponents.GUI_PROCEED, (button) -> {
             NeoForge.EVENT_BUS.start();
-            this.minecraft.setScreen((Screen) null);
+            this.minecraft.gui.setScreen((Screen) null);
         }).bounds(this.width / 2 - 100, 140, 200, 20).build();
 
         button_howto = Button.builder(Component.translatable("button.howto"), (button) -> {
@@ -51,7 +51,7 @@ public class MemoryErrorScreen extends Screen
 
         button_noremind = Button.builder(Component.translatable("button.stopremind"), (button) -> {
             NeoForge.EVENT_BUS.start();
-            this.minecraft.setScreen((Screen) null);
+            this.minecraft.gui.setScreen((Screen) null);
             CommonConfiguration.config.getCommonConfig().disableWarnings = true;
             CommonConfiguration.config.save();
         }).bounds(this.width / 2 - 100, 160, 200, 20).build();
