@@ -3,6 +3,7 @@ package com.memorysettings.mixin;
 import com.memorysettings.MemoryErrorScreen;
 import com.memorysettings.MemorysettingsMod;
 import com.memorysettings.config.CommonConfiguration;
+import net.minecraft.client.GameLoadCookie;
 import net.minecraft.client.Minecraft;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -13,12 +14,12 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class FontManagerMixin
 {
     @Inject(method = "onGameLoadFinished", at = @At(value = "INVOKE", target = "Ljava/lang/Runnable;run()V"), cancellable = true)
-    private void onInit(final Minecraft.GameLoadCookie gameLoadCookie, final CallbackInfo ci)
+    private void onInit(final GameLoadCookie cookie, final CallbackInfo ci)
     {
-        if (!(Minecraft.getInstance().screen instanceof MemoryErrorScreen) && !MemorysettingsMod.memorycheckresult.getSiblings().isEmpty()
+        if (!(Minecraft.getInstance().gui.screen() instanceof MemoryErrorScreen) && !MemorysettingsMod.memorycheckresult.getSiblings().isEmpty()
             && !CommonConfiguration.config.getCommonConfig().disableWarnings)
         {
-            Minecraft.getInstance().setScreen(new MemoryErrorScreen(MemorysettingsMod.memorycheckresult));
+            Minecraft.getInstance().gui.setScreen(new MemoryErrorScreen(MemorysettingsMod.memorycheckresult));
             ci.cancel();
         }
     }

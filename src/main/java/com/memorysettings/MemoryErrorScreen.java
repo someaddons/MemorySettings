@@ -31,7 +31,7 @@ public class MemoryErrorScreen extends Screen
         super.init();
 
         button_proceed = Button.builder(CommonComponents.GUI_PROCEED, (button) -> {
-            this.minecraft.setScreen((Screen) null);
+            this.minecraft.gui.setScreen((Screen) null);
         }).bounds(this.width / 2 - 100, 140, 200, 20).build();
 
         button_howto = Button.builder(Component.translatable("button.howto"), (button) -> {
@@ -47,7 +47,7 @@ public class MemoryErrorScreen extends Screen
         }).bounds(this.width / 2 - 100, 120, 200, 20).build();
 
         button_noremind = Button.builder(Component.translatable("button.stopremind"), (button) -> {
-            this.minecraft.setScreen((Screen) null);
+            this.minecraft.gui.setScreen((Screen) null);
             CommonConfiguration.config.getCommonConfig().disableWarnings = true;
             CommonConfiguration.config.save();
         }).bounds(this.width / 2 - 100, 160, 200, 20).build();
